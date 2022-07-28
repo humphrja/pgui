@@ -1,12 +1,9 @@
 {
-    "java.project.sourcePaths": ["src"],
+    "java.project.sourcePaths": [
+        "src"
+    ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "d:\\Applications\\Processing\\processing-3.5.4\\core\\library\\core.jar",
-        "d:\\Applications\\Processing\\processing-3.5.4\\core\\library\\gluegen-rt.jar",
-        "d:\\Applications\\Processing\\processing-3.5.4\\core\\library\\gluegen-rt-natives-windows-i586.jar",
-        "d:\\Applications\\Processing\\processing-3.5.4\\core\\library\\jogl-all.jar",
-        "d:\\Applications\\Processing\\processing-3.5.4\\core\\library\\jogl-all-natives-windows-i586.jar"
+        "lib/**/*.jar"
     ]
 }
