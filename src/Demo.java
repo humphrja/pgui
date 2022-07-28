@@ -20,7 +20,7 @@ public class Demo extends PApplet {
 
         // Creating the palette of the main windows
         Palette winPalette = new Palette(color(53, 45,
-                57), color(255), color(58, 155, 216), color(224, 82, 99), color(114, 162, 118));
+                57), color(255), color(58, 155, 216), color(224, 82, 99), color(238, 122, 49));
 
         // Main menu - select an example window
         Window w = new Window(this, winPalette);
@@ -188,6 +188,7 @@ public class Demo extends PApplet {
         stroke(0);
         fill(hue, 100, 100);
         ellipse(width / 2, height / 2, radius, radius);
+        colorMode(RGB, 255, 255, 255);
     }
 
     public void sliderExample2(ScrollWindow win) {

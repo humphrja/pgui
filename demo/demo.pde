@@ -39,7 +39,7 @@ void setup() {
   Window w2 = new Window(this, winPalette);
   w2.addHeading("Windows can display content from custom methods too");
   createBackToHomeBtn(w2);
-  w2.addContent("myMethod", new Object[] {}, new testClass());
+  w2.addContent("myCircle", new Object[] {}, new myClass());
   windows[2] = w2;
   //
 
@@ -108,11 +108,6 @@ void setup() {
 
 void draw() {
   windows[currentWindow].display(g); // g is the default PGraphics object for the main sketch
-  
-  //g.beginDraw();
-  //noStroke();
-  //fill(255);
-  //ellipse(mouseX, mouseY, 10, 10);
 }
 
 
