@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="pgui">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pgui.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

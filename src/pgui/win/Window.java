@@ -10,19 +10,35 @@ import pgui.txt.*;
 import pgui.btn.Button;
 
 /**
+ * A Window is a class that contains a collection of 'elements' - other interface objects, such as buttons, text or other windows.
+ *
  * @author Jack Humphreys
  * @version 1.3
- * 
- * A Window is a class that contains a collection of 'elements' - other interface objects, such as buttons, text or other windows.
+ * @see Element
  */
-
 public class Window extends Element {
     PApplet sketch;
 
+    // These arrays contain the window's elements
+    /**
+     * Contains all {@link Button} objects within the Window.
+     */
     public Button[] btns = new Button[0];
+    /**
+     * Contains all {@link Text} objects within the Window.
+     */
     public Text[] texts = new Text[0];
-    public ScrollWindow[] sWindows = new ScrollWindow[0]; // These arrays contain the window's elements
+    /**
+     * Contains all {@link ScrollWindow} objects within the Window.
+     */
+    public ScrollWindow[] sWindows = new ScrollWindow[0];
+    /**
+     * Contains all {@link Slider} objects within the Window.
+     */
     public Slider[] sliders = new Slider[0];
+    /**
+     * Contains all {@link Switch} objects within the Window.
+     */
     public Switch[] switches = new Switch[0];
 
     // These 3 arrays are used for displaying any visual methods
@@ -30,14 +46,28 @@ public class Window extends Element {
     Object[][] displayArgs = new Object[0][0]; //   Contains the arguments for the methods
     Object[] classInstances = new Object[0]; //     Contains the instances of the methods' classes
 
-    public int x, y; //                             The position of the window on the parent PGraphics object
-    public int displayX, displayY; //               The position of the PGraphics object on the screen
-    public int translateX, translateY; //           Any translations applied to the window content
+    /**
+     * The position of the window on the parent PGraphics object. Set to 0 by default.
+     */
+    public int x, y;
+    /**
+     * The position of the parent PGraphics object on the screen. Set to 0 by default.
+     */
+    public int displayX, displayY;
+    /**
+     * Any translations applied to the window content.
+     */
+    public int translateX, translateY;
     public int Width, Height;
     boolean border = false;
     int borderStrokeWeight = 0;
 
-    // Used for main windows, with no parent window
+    /**
+     * Used for main windows, with no parent window.
+     *
+     * @param applet A reference to the Processing sketch
+     * @param cols The Window's colour palette
+     */
     public Window(PApplet applet, Palette cols) {
         super(cols);
         sketch = applet;
@@ -47,7 +77,13 @@ public class Window extends Element {
         Height = sketch.height;
     }
 
-    // Used for sub-windows
+    /**
+     * Used for sub-windows.
+     *
+     * @param applet A reference to the Processing sketch
+     * @param cols The Window's colour palette
+     * @param parent The parent window within which the current window belongs to
+     */
     public Window(PApplet applet, Palette cols, Window parent) {
         super(parent);
         sketch = applet;

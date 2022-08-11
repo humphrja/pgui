@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"pgui.btn","l":"Button"},{"p":"<Unnamed>","l":"Demo"},{"p":"pgui","l":"Element"},{"p":"pgui.win","l":"Palette"},{"p":"pgui.win","l":"ScrollWindow"},{"p":"pgui.btn","l":"Slider"},{"p":"pgui.btn","l":"Switch"},{"p":"pgui.txt","l":"Text"},{"p":"pgui.win","l":"Window"}];updateSearchResults();

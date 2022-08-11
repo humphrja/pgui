@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="lib2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/deploy.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/management-agent.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/jsse.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/plugin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/rt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/jce.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/jfxswt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/resources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/jfr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/demo/application.windows64/java/lib/charsets.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -5,20 +5,42 @@ import processing.event.KeyEvent; //    Used to handle key events
 import processing.event.MouseEvent; //  Used to handle mouse events
 import pgui.txt.Text;
 
-// A ScrollWindow is like a window, except that it's content can be scrolled
-// through using a scroll bar, scroll buttons or the mouse scroll wheel
 
+/**
+ * A ScrollWindow is like a window, except that it's content can be scrolled through using a scroll bar, scroll buttons or the mouse scroll wheel.
+ *
+ * @version 1.1
+ */
 public class ScrollWindow extends Window {
     public PApplet sketch;
 
+    /**
+     * The canvas of the scroll window which the child Elements are displayed to
+     */
     public PGraphics canvas; // scrollCanvas
-    public float scroll, maxScroll, scrollSensitivity, barPos; //     Represents the vertical translation of the content
+    /**
+     * Represents the vertical translation of the content
+     */
+    public float scroll;
+    public float maxScroll, scrollSensitivity, barPos;
 
     public float barWidth = 20;
     public float barHeight = 150;
 
-    boolean mouseDown = false; // This variable indicates if the scroll bar is currently being manipulated via mouse input
+    /**
+     * This indicates if the scroll bar is currently being manipulated via mouse input
+     */
+    boolean mouseDown = false;
 
+    /**
+     * @param applet A reference to the Processing sketch
+     * @param cols The colour palette of the ScrollWindow
+     * @param x The position of the ScrollWindow's canvas on the screen.
+     * @param y The position of the ScrollWindow's canvas on the screen.
+     * @param w Width of window
+     * @param h Height of window
+     * @param contentH The total content height - the vertical length of the scroll canvas.
+     */
     public ScrollWindow(PApplet applet, Palette cols, int x, int y, int w, int h, int contentH) {
         super(applet, cols); // This is like creating a new Window object
         sketch = applet;
@@ -69,6 +91,11 @@ public class ScrollWindow extends Window {
         canvas.endDraw();
     }
 
+    /**
+     * This is called in replacement of the standard display() method.
+     *
+     * @param c The PGraphics object (canvas) for which to draw to.
+     */
     public void swdisplay(PGraphics c) {
         translateY = (int) -scroll;
 
@@ -106,18 +133,18 @@ public class ScrollWindow extends Window {
                 && sketch.mouseX <= Width + displayX && sketch.mouseY <= Height + displayY;
     }
 
-    // This is called whenever there is mouse input and handles the mouse events to call a corresponding method
+    /**
+     * This is called whenever there is mouse input and handles the mouse events to call a corresponding method.
+     *
+     * @param e The corresponding mouse event
+     * @see MouseEvent
+     */
     public void mouseEvent(MouseEvent e) {
         switch (e.getAction()) {
-            case (MouseEvent.PRESS):
-                mousePressed(e);
-                break;
-            case (MouseEvent.RELEASE):
-                mouseReleased(e);
-                break;
-            case (MouseEvent.WHEEL):
-                mouseWheel(e);
-                break;
+            case (MouseEvent.PRESS) -> mousePressed(e);
+            case (MouseEvent.RELEASE) -> mouseReleased(e);
+            case (MouseEvent.WHEEL) -> mouseWheel(e);
+
             // other mouse events cases here...
         }
     }
@@ -141,37 +168,32 @@ public class ScrollWindow extends Window {
         }
     }
 
+    /**
+     * This is called whenever there is keyboard input and handles the key events to call a corresponding method.
+     *
+     * @param e The corresponding key event
+     * @see KeyEvent
+     */
     public void keyEvent(KeyEvent e) {
         switch (e.getAction()) {
-            case (KeyEvent.PRESS):
-                keyPressed(e);
-                break;
-            case (KeyEvent.RELEASE):
-                keyReleased(e);
-                break;
+            case (KeyEvent.PRESS) -> keyPressed(e);
+            case (KeyEvent.RELEASE) -> keyReleased(e);
         }
     }
 
     void keyPressed(KeyEvent e) {
         if (mouseOver()) {
             switch (e.getKeyCode()) {
-                case (PApplet.UP):
+                case (PApplet.UP) -> {
                     scroll -= scrollSensitivity;
                     scroll = PApplet.constrain(scroll, 0, maxScroll);
-                    break;
-
-                case (PApplet.DOWN):
+                }
+                case (PApplet.DOWN) -> {
                     scroll += scrollSensitivity;
                     scroll = PApplet.constrain(scroll, 0, maxScroll);
-                    break;
-
-                case (PApplet.ENTER):
-                    scroll = maxScroll;
-                    break;
-
-                case (PApplet.BACKSPACE):
-                    scroll = 0;
-                    break;
+                }
+                case (PApplet.ENTER) -> scroll = maxScroll;
+                case (PApplet.BACKSPACE) -> scroll = 0;
             }
         }
     }

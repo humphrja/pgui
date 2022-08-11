@@ -13,11 +13,11 @@ public class Demo extends PApplet {
     // Used to declare the size of the sketch window
     public void settings() {
         size(1400, 900);
+        // fullScreen();
     }
 
     // This is run once, before the first frame of draw()
     public void setup() {
-
         // Creating the palette of the main windows
         Palette winPalette = new Palette(color(53, 45,
                 57), color(255), color(58, 155, 216), color(224, 82, 99), color(238, 122, 49));
