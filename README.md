@@ -1,4 +1,4 @@
 # pgui
  A Processing library used for the creation of GUI elements.
  
- https://humphrja.github.io/doc/allclasses-index.html
+ View the pgui [Developer's Reference](https://humphrja.github.io/pgui/doc/allclasses-index.html)
