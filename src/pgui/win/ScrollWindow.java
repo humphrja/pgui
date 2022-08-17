@@ -5,7 +5,6 @@ import processing.event.KeyEvent; //    Used to handle key events
 import processing.event.MouseEvent; //  Used to handle mouse events
 import pgui.txt.Text;
 
-
 /**
  * A ScrollWindow is like a window, except that it's content can be scrolled through using a scroll bar, scroll buttons or the mouse scroll wheel.
  *
@@ -141,9 +140,15 @@ public class ScrollWindow extends Window {
      */
     public void mouseEvent(MouseEvent e) {
         switch (e.getAction()) {
-            case (MouseEvent.PRESS) -> mousePressed(e);
-            case (MouseEvent.RELEASE) -> mouseReleased(e);
-            case (MouseEvent.WHEEL) -> mouseWheel(e);
+            case (MouseEvent.PRESS):
+                mousePressed(e);
+                break;
+            case (MouseEvent.RELEASE):
+                mouseReleased(e);
+                break;
+            case (MouseEvent.WHEEL):
+                mouseWheel(e);
+                break;
 
             // other mouse events cases here...
         }
@@ -176,24 +181,32 @@ public class ScrollWindow extends Window {
      */
     public void keyEvent(KeyEvent e) {
         switch (e.getAction()) {
-            case (KeyEvent.PRESS) -> keyPressed(e);
-            case (KeyEvent.RELEASE) -> keyReleased(e);
+            case (KeyEvent.PRESS):
+                keyPressed(e);
+                break;
+            case (KeyEvent.RELEASE):
+                keyReleased(e);
+                break;
         }
     }
 
     void keyPressed(KeyEvent e) {
         if (mouseOver()) {
             switch (e.getKeyCode()) {
-                case (PApplet.UP) -> {
+                case (PApplet.UP):
                     scroll -= scrollSensitivity;
                     scroll = PApplet.constrain(scroll, 0, maxScroll);
-                }
-                case (PApplet.DOWN) -> {
+                    break;
+                case (PApplet.DOWN):
                     scroll += scrollSensitivity;
                     scroll = PApplet.constrain(scroll, 0, maxScroll);
-                }
-                case (PApplet.ENTER) -> scroll = maxScroll;
-                case (PApplet.BACKSPACE) -> scroll = 0;
+                    break;
+                case (PApplet.ENTER):
+                    scroll = maxScroll;
+                    break;
+                case (PApplet.BACKSPACE):
+                    scroll = 0;
+                    break;
             }
         }
     }
