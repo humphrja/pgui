@@ -14,5 +14,5 @@
 
  
 ## Details ##
- * Developed with Java 8 & tested using Processing 3.5.4.
- * Compiled with JavaSE-1.8 for Processing.
+ * Tested using Processing 3.5.4.
+ * Developed with Java SE 8 using Eclipse Temurin 17.0.4
