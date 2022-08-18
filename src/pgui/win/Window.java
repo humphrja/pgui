@@ -59,7 +59,13 @@ public class Window extends Element {
      */
     public int translateX, translateY;
     public int Width, Height;
+    /**
+     * Default set to false
+     */
     boolean border = false;
+    /**
+     * Default set to 0
+     */
     int borderStrokeWeight = 0;
 
     /**
@@ -143,6 +149,16 @@ public class Window extends Element {
         c.endDraw();
     }
 
+    /**
+     * A method to set the dimensions and position of the window.
+     *
+     * @param xpos Value to set {@link Window#x}
+     * @param ypos Value to set {@link Window#y}
+     * @param w Value to set {@link Window#Width}
+     * @param h Value to set {@link Window#Height}
+     * @param Dx Value to set {@link Window#displayX}
+     * @param Dy Value to set {@link Window#displayY}
+     */
     public void setDimensions(int xpos, int ypos, int w, int h, int Dx, int Dy) { // Used to override window's default dimensions
         x = xpos; //        Position of window on PGraphics object
         y = ypos;
@@ -152,11 +168,21 @@ public class Window extends Element {
         displayY = Dy;
     }
 
+    /**
+     * Adds a border to the window.
+     *
+     * @param strokeWeight Value to set {@link Window#borderStrokeWeight}
+     */
     public void addBorder(int strokeWeight) {
         border = true;
         borderStrokeWeight = strokeWeight;
     }
 
+    /**
+     * Adds a {@link Text} object to the Window that is a Heading.
+     *
+     * @param title Heading text
+     */
     public void addHeading(String title) {
         Text t = this.addText(title, Width / 2, 65, 35);
         t.align(PConstants.CENTER, PConstants.BOTTOM);
@@ -171,6 +197,20 @@ public class Window extends Element {
     // Return interface object
 
     // The created object is returned so as to easily override any default parameters
+
+    /**
+     * Adds a {@link Button} to the Window.
+     *
+     * @param methodName The name of the method the Button will invoke
+     * @param methodArgs The parameters to be passed to the Button's activation method
+     * @param instance An instance of the Class the method belongs to. Use keyword 'this' if the method is defined within the Processing Editor without a class.
+     * @param label The Button's label - {@link Button#label}
+     * @param btnx The position of the Button relative to the Window
+     * @param btny The position of the Button relative to the Window
+     * @param w The Button's width - {@link Button#Width}
+     * @param h The Button's Height - {@link Button#Height}
+     * @return The created Button.
+     */
     public Button addButton(String methodName, Object[] methodArgs, Object instance, String label, float btnx,
             float btny, float w, float h) {
         Button btn = new Button(sketch, methodName, methodArgs, instance, label, btnx + x, btny + y, w, h, this);

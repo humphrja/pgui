@@ -39,7 +39,7 @@ void setup() {
   Window w2 = new Window(this, winPalette);
   w2.addHeading("Windows can display content from custom methods too");
   createBackToHomeBtn(w2);
-  w2.addContent("myMethod", new Object[] {}, this);
+  w2.addContent("myCircle", new Object[] {}, new myClass());
   windows[2] = w2;
   //
 
@@ -99,7 +99,7 @@ void setup() {
   createBackToHomeBtn(w7);
   w7.addSlider(0, 360, width / 2, height - 200, 500);
   Slider s = w7.addSlider(50, 450, width - 200, height / 2, 200);
-  s.setAxis('v');
+  s.setAxis('v', LEFT);
   w7.addContent("sliderExample", new Object[] {}, this);
   windows[7] = w7;
   //
@@ -111,9 +111,11 @@ void draw() {
 }
 
 
-public void myMethod() {
-  ellipse(mouseX, mouseY, r, r);
-}
+//public void myMethod() {
+//  stroke(255);
+//  fill(0);
+//  ellipse(mouseX, mouseY, r, r);
+//}
 
 void createStartBtnGrid(Window w) {
   int nx = 3;

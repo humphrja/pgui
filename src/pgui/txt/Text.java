@@ -8,7 +8,7 @@ import processing.core.*;
 // The Text object is used to display text to the screen, like a textbox or a title
 
 /**
- * An object for displaying text to the screen.
+ * An object for displaying text within a {@link Window}.
  */
 public class Text extends Element {
     /**

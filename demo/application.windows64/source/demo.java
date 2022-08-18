@@ -10,8 +10,8 @@ import pgui.btn.Button;
 import pgui.btn.Slider; 
 import pgui.txt.Text; 
 
-import pgui.*; 
 import pgui.btn.*; 
+import pgui.*; 
 import pgui.txt.*; 
 import pgui.win.*; 
 import japplemenubar.*; 
@@ -21,26 +21,6 @@ import processing.data.*;
 import processing.event.*; 
 import processing.javafx.*; 
 import processing.opengl.*; 
-import jogamp.nativetag.common.windows.i586.*; 
-import com.jogamp.common.*; 
-import com.jogamp.common.jvm.*; 
-import com.jogamp.common.net.*; 
-import com.jogamp.common.net.asset.*; 
-import com.jogamp.common.nio.*; 
-import com.jogamp.common.os.*; 
-import com.jogamp.common.type.*; 
-import com.jogamp.common.util.*; 
-import com.jogamp.common.util.awt.*; 
-import com.jogamp.common.util.cache.*; 
-import com.jogamp.common.util.locks.*; 
-import com.jogamp.gluegen.runtime.*; 
-import jogamp.common.*; 
-import jogamp.common.jvm.*; 
-import jogamp.common.os.*; 
-import jogamp.common.os.elf.*; 
-import jogamp.common.util.*; 
-import jogamp.common.util.locks.*; 
-import jogamp.nativetag.opengl.windows.i586.*; 
 import com.jogamp.nativewindow.*; 
 import com.jogamp.nativewindow.egl.*; 
 import com.jogamp.nativewindow.swt.*; 
@@ -153,6 +133,38 @@ import jogamp.newt.driver.x11.*;
 import jogamp.newt.driver.windows.*; 
 import jogamp.newt.driver.macosx.*; 
 import jogamp.newt.driver.bcm.vc.iv.*; 
+import com.jogamp.common.*; 
+import com.jogamp.common.jvm.*; 
+import com.jogamp.common.net.*; 
+import com.jogamp.common.net.asset.*; 
+import com.jogamp.common.nio.*; 
+import com.jogamp.common.os.*; 
+import com.jogamp.common.type.*; 
+import com.jogamp.common.util.*; 
+import com.jogamp.common.util.awt.*; 
+import com.jogamp.common.util.cache.*; 
+import com.jogamp.common.util.locks.*; 
+import com.jogamp.gluegen.runtime.*; 
+import jogamp.common.*; 
+import jogamp.common.jvm.*; 
+import jogamp.common.os.*; 
+import jogamp.common.os.elf.*; 
+import jogamp.common.util.*; 
+import jogamp.common.util.locks.*; 
+import jogamp.nativetag.opengl.linux.i586.*; 
+import jogamp.nativetag.opengl.linux.amd64.*; 
+import jogamp.nativetag.common.linux.i586.*; 
+import jogamp.nativetag.opengl.windows.i586.*; 
+import jogamp.nativetag.common.linux.amd64.*; 
+import jogamp.nativetag.opengl.linux.aarch64.*; 
+import jogamp.nativetag.opengl.linux.armv6hf.*; 
+import jogamp.nativetag.opengl.windows.amd64.*; 
+import jogamp.nativetag.common.windows.i586.*; 
+import jogamp.nativetag.common.linux.aarch64.*; 
+import jogamp.nativetag.common.linux.armv6hf.*; 
+import jogamp.nativetag.common.windows.amd64.*; 
+import jogamp.nativetag.opengl.macosx.universal.*; 
+import jogamp.nativetag.common.macosx.universal.*; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -206,7 +218,7 @@ public void setup() {
   Window w2 = new Window(this, winPalette);
   w2.addHeading("Windows can display content from custom methods too");
   createBackToHomeBtn(w2);
-  w2.addContent("myMethod", new Object[] {}, this);
+  w2.addContent("myCircle", new Object[] {}, new myClass());
   windows[2] = w2;
   //
 
@@ -266,7 +278,7 @@ public void setup() {
   createBackToHomeBtn(w7);
   w7.addSlider(0, 360, width / 2, height - 200, 500);
   Slider s = w7.addSlider(50, 450, width - 200, height / 2, 200);
-  s.setAxis('v');
+  s.setAxis('v', LEFT);
   w7.addContent("sliderExample", new Object[] {}, this);
   windows[7] = w7;
   //
@@ -278,9 +290,11 @@ public void draw() {
 }
 
 
-public void myMethod() {
-  ellipse(mouseX, mouseY, r, r);
-}
+//public void myMethod() {
+//  stroke(255);
+//  fill(0);
+//  ellipse(mouseX, mouseY, r, r);
+//}
 
 public void createStartBtnGrid(Window w) {
   int nx = 3;
@@ -354,10 +368,19 @@ public void sliderExample2(ScrollWindow win) {
   c.fill(0, 100, 100);
   c.ellipse(win.Width / 2, win.Height / 2, radius, radius);
 }
+public class myClass {
+  myClass() {
+  }
 
+  public void myCircle() {
+    stroke(255);
+    fill(0);
+    ellipse(mouseX, mouseY, r, r);
+  }
+}
   public void settings() {  size(1400, 900); }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "--present", "--window-color=#666666", "--hide-stop", "demo" };
+    String[] appletArgs = new String[] { "demo" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {
