@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Class-Path: pgui.jar pgui.jar deploy.jar management-agent.jar jsse.jar p
+ lugin.jar rt.jar jce.jar jfxswt.jar resources.jar jfr.jar charsets.jar 
+ jogl-all-natives-windows-i586.jar demo.jar gluegen-rt-natives-windows-i
+ 586.jar jogl-all.jar gluegen-rt.jar core.jar pgui.jar core.jar pgui.jar
+  gluegen-rt.jar demo.jar jogl-all-natives-windows-amd64.jar core.jar gl
+ uegen-rt-natives-windows-amd64.jar jogl-all.jar
+
