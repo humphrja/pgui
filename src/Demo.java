@@ -151,7 +151,7 @@ public class Demo extends PApplet {
             }
         }
 
-        w.addButton(f, new Object[] { 7 }, this, "Interactives", ix + 1 * (btnW + spacing), iy + 2 * (btnH + spacing),
+        w.addButton(f, new Object[] { 7 }, this, "Interactives", ix + btnW + spacing, iy + 2 * (btnH + spacing),
                 btnW,
                 btnH);
     }
