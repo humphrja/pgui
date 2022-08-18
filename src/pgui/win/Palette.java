@@ -9,7 +9,20 @@ package pgui.win;
  *  This palette is transferred to each {@link pgui.Element} within the window.
  */
 public class Palette {
-    public int background, stroke, primary, highlight, select;
+
+    public int background, stroke;
+    /**
+     * Main fill colour for elements
+     */
+    public int primary;
+    /**
+     * Fill when interactive elements are hovered over
+     */
+    public int highlight;
+    /**
+     * Fill when elements are selected
+     */
+    public int select;
 
     /**
      * Use the <a href="https://processing.org/reference/color_.html">color()</a> method for the parameters.

@@ -99,7 +99,7 @@ void setup() {
   createBackToHomeBtn(w7);
   w7.addSlider(0, 360, width / 2, height - 200, 500);
   Slider s = w7.addSlider(50, 450, width - 200, height / 2, 200);
-  s.setAxis('v');
+  s.setAxis('v', LEFT);
   w7.addContent("sliderExample", new Object[] {}, this);
   windows[7] = w7;
   //

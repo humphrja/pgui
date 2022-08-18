@@ -14,5 +14,5 @@
 
  
 ## Details ##
- * Developed & tested using Processing 3.5.4.
+ * Developed with Java 8 & tested using Processing 3.5.4.
  * Compiled with JavaSE-1.8 for Processing.
