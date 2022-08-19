@@ -48,6 +48,5 @@ public class Element {
      * @param c The PGraphics object (canvas) for which to draw to.
      */
     public void display(PGraphics c) {
-        ;
     }
 }
