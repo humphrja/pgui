@@ -96,6 +96,8 @@ public class ScrollWindow extends Window {
      * @param c The PGraphics object (canvas) for which to draw to.
      */
     public void swdisplay(PGraphics c) {
+        if (hidden){return;}
+
         translateY = (int) -scroll;
 
         // Displays the window's contents to the scroll canvas
@@ -124,12 +126,14 @@ public class ScrollWindow extends Window {
 
     boolean mouseOver() {
         return sketch.mouseX >= x + displayX && sketch.mouseY >= y + displayY
-                && sketch.mouseX <= x + Width + displayX && sketch.mouseY <= y + Height + displayY;
+                && sketch.mouseX <= x + Width + displayX && sketch.mouseY <= y + Height + displayY
+                && !disabled;
     }
 
     boolean mouseInBarRegion() {
         return sketch.mouseX >= Width - barWidth + displayX && sketch.mouseY >= displayY
-                && sketch.mouseX <= Width + displayX && sketch.mouseY <= Height + displayY;
+                && sketch.mouseX <= Width + displayX && sketch.mouseY <= Height + displayY
+                && !disabled;
     }
 
     /**

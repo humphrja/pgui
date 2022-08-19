@@ -4,7 +4,7 @@ import processing.core.*;
 import java.lang.reflect.*; //  Used for accessing Method types
 import java.util.Arrays; //     Used for appending to arrays
 
-import pgui.Element;
+import pgui.type.Element;
 import pgui.btn.*;
 import pgui.txt.*;
 import pgui.btn.Button;
@@ -97,6 +97,8 @@ public class Window extends Element {
     }
 
     public void display(PGraphics c) { // c is short for canvas
+        if (hidden){return;}
+
         c.beginDraw();
         c.noStroke();
         c.fill(palette.background);

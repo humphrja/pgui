@@ -1,4 +1,4 @@
-package pgui;
+package pgui.type;
 
 import processing.core.PGraphics;
 import pgui.win.*;
@@ -19,6 +19,10 @@ public class Element {
      * Colour palette of the element, usually the same as the window
      */
     public Palette palette;
+
+    // 'protected' -> can be accessed by subclasses
+    protected boolean disabled = false;
+    protected boolean hidden = false;
 
     // Each window has its own colour palette. This palette is transferred to the
     // interface elements within the window
@@ -48,5 +52,29 @@ public class Element {
      * @param c The PGraphics object (canvas) for which to draw to.
      */
     public void display(PGraphics c) {
+    }
+
+    /**
+     * Sets the element to be visible and responsive
+     */
+    public void enable(){
+        disabled = false;
+        hidden = false;
+    }
+
+    /**
+     * Sets the element to be visible but unresponsive
+     */
+    public void disable(){
+        disabled = true;
+        hidden = false;
+    }
+
+    /**
+     * Sets the element to be invisible and unresponsive
+     */
+    public void hide(){
+        disabled = true;
+        hidden = true;
     }
 }

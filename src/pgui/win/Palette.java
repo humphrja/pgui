@@ -1,12 +1,14 @@
 package pgui.win;
 
+import pgui.type.Element;
+
 /**
  * A datatype for storing and accessing a colour palette.
  *
  *  This class is used for organising different colours associated with an object into one class
  *
  *  Each {@link Window} has its own colour palette.
- *  This palette is transferred to each {@link pgui.Element} within the window.
+ *  This palette is transferred to each {@link Element} within the window.
  */
 public class Palette {
 

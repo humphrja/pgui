@@ -1,6 +1,6 @@
 package pgui.btn;
 
-import pgui.Element;
+import pgui.type.Element;
 import pgui.txt.Text;
 import pgui.win.Window;
 import processing.core.*;
@@ -54,12 +54,18 @@ public class Slider extends Element {
         }
     }
 
-    public boolean mouseOver() { // Returns true if mouse is over circle
+    /**
+     * Returns true if mouse is over circle
+     * @return If mouse is over circle
+     */
+    public boolean mouseOver() {
         return PApplet.dist(sketch.mouseX, sketch.mouseY, sx + window.displayX + window.translateX,
-                sy + window.displayY + window.translateY) <= sr;
+                sy + window.displayY + window.translateY) <= sr && !disabled;
     }
 
     public void display(PGraphics c) {
+        if (hidden){return;}
+
         float d = 15; // End cap distance / 2
 
         c.stroke(palette.stroke);

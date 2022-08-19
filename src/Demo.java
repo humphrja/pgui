@@ -62,6 +62,7 @@ public class Demo extends PApplet {
         ScrollWindow sw = w4.addScrollWindow(p2, width / 2 - swidth - 25, 100, swidth, 600, 1000);
         sw.addHeading("This is a scroll window");
         createBackToHomeBtn(sw);
+        sw.hide();
 
         ScrollWindow sw2 = w4.addScrollWindow(p2, width / 2 + 25, 100, swidth, 600, 800);
         sw2.addHeading("This is another scroll window!");

@@ -1,6 +1,6 @@
 package pgui.btn;
 
-import pgui.Element;
+import pgui.type.Element;
 import pgui.win.Window;
 import processing.core.*;
 
@@ -24,6 +24,8 @@ public class Switch extends Element {
     }
 
     public void display(PGraphics c) {
+        if (hidden){return;}
+
         float dx = Width / 2 - R; //  Distance between x & start of arc
 
         if (value) { // On
@@ -65,6 +67,6 @@ public class Switch extends Element {
     }
 
     boolean mouseOver() {
-        return PApplet.dist(sketch.mouseX, sketch.mouseY, sx, y) <= r;
+        return PApplet.dist(sketch.mouseX, sketch.mouseY, sx, y) <= r && !disabled;
     }
 }
