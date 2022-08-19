@@ -51,7 +51,7 @@ public class ScrollWindow extends Window {
         sketch.registerMethod("keyEvent", this);
 
         // For scroll windows, the x & y variables associated with it's window object must be set to 0, as the content should not be translated away from the origin of the scroll canvas.
-        setDimensions(0, 0, w, h, x, y);
+        setDimensions(0,0, w, h, x, y);
 
         canvas = sketch.createGraphics(w, h);
 
@@ -95,13 +95,13 @@ public class ScrollWindow extends Window {
      *
      * @param c The PGraphics object (canvas) for which to draw to.
      */
-    public void swdisplay(PGraphics c) {
+    public void display(PGraphics c) {
         if (hidden){return;}
 
         translateY = (int) -scroll;
 
         // Displays the window's contents to the scroll canvas
-        display(canvas);
+        super.display(canvas);
 
         if (mouseOver() || mouseDown) {
             displayScrollBar();
