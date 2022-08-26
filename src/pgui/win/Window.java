@@ -116,6 +116,8 @@ public class Window extends Element {
             // such as translations, scaling, etc.
         }
 
+        c.colorMode(PConstants.RGB, 255);
+
         for (Button b : btns) { // Display buttons
             b.display(c);
         }

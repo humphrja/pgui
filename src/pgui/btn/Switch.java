@@ -5,8 +5,6 @@ import pgui.win.Window;
 import processing.core.*;
 
 public class Switch extends Element {
-    PApplet sketch;
-
     public boolean value = false;
     boolean prevValue = false;
     float x, y, Width, Height, R, sx;
@@ -14,7 +12,6 @@ public class Switch extends Element {
 
     public Switch(PApplet applet, float cx, float cy, float w, float h, Window window) {
         super(window);
-        sketch = applet;
 
         x = cx; //      Center x
         y = cy; //      Center y

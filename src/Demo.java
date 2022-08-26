@@ -3,6 +3,7 @@ import processing.core.*;
 import pgui.btn.Button;
 import pgui.win.*;
 import pgui.btn.*;
+import pgui.txt.*;
 
 public class Demo extends PApplet {
     float r = 200;
@@ -19,8 +20,8 @@ public class Demo extends PApplet {
     // This is run once, before the first frame of draw()
     public void setup() {
         // Creating the palette of the main windows
-        Palette winPalette = new Palette(color(53, 45,
-                57), color(255), color(58, 155, 216), color(224, 82, 99), color(238, 122, 49));
+        Palette winPalette = new Palette(color(53, 45, 57), color(255),
+                color(58, 155, 216), color(224, 82, 99), color(238, 122, 49));
 
         // Main menu - select an example window
         Window w = new Window(this, winPalette);
@@ -102,21 +103,44 @@ public class Demo extends PApplet {
         Window w7 = new Window(this, winPalette);
         w7.addHeading("Sliders and switches");
         createBackToHomeBtn(w7);
+
         w7.addSlider(0, 360, width / 2, height - 200, 500);
+        Text t = w7.addText("Hue", width/2, height - 250, 20);
+        t.align(CENTER, BOTTOM);
         Slider s = w7.addSlider(50, 450, width - 200, height / 2, 200);
         s.setAxis('v', LEFT);
+        Text t2 = w7.addText("Radius", width - 200, height/2 - 200/2 - 10, 20);
+        t2.align(CENTER, BOTTOM);
+
         w7.addContent("sliderExample", new Object[] {}, this);
-        w7.addSwitch(width / 2, height - 100, 80, 45);
+
+        w7.addSwitch(width / 2 + 80/2 + 10, height - 100, 80, 45);
+        Text t3 = w7.addText("Disable", width/2 - 10, height - 100, 20);
+        t3.align(RIGHT, CENTER);
+
+        w7.addSwitch(width - 100, height/2, 80, 45);
+        w7.addText("Hide", width - 100, height/2 - 50, 20);
         windows[7] = w7;
         //
     }
 
     // This is run every frame
     public void draw() {
+        // These are used to handle what happens when switches are turned on or off
         if (windows[7].switches[0].toggledOn()){
             windows[7].sliders[0].disable();
+            windows[7].texts[1].disable();
         } else if (windows[7].switches[0].toggledOff()){
             windows[7].sliders[0].enable();
+            windows[7].texts[1].enable();
+        }
+
+        if (windows[7].switches[1].toggledOn()){
+            windows[7].sliders[1].hide();
+            windows[7].texts[2].hide();
+        } else if (windows[7].switches[1].toggledOff()){
+            windows[7].sliders[1].enable();
+            windows[7].texts[2].enable();
         }
 
         windows[currentWindow].display(g); // g is the default PGraphics object for the main sketch
@@ -158,14 +182,13 @@ public class Demo extends PApplet {
             }
         }
 
-        w.addButton(f, new Object[] { 7 }, this, "Interactives", ix + btnW + spacing, iy + 2 * (btnH + spacing),
-                btnW,
-                btnH);
+        w.addButton(f, new Object[] {7}, this, "Interactives",
+                ix + btnW + spacing, iy + 2*(btnH + spacing), btnW, btnH);
     }
 
     void createBackToHomeBtn(Window w) {
-        w.addButton("setWindow", new Object[] { 0 }, this, "Back to main menu", w.Width - 120, w.Height - 120, 100,
-                100);
+        w.addButton("setWindow", new Object[] { 0 }, this, "Back to main menu",
+                w.Width - 120, w.Height - 120, 100, 100);
     }
 
     public void close() {
