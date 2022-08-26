@@ -8,6 +8,7 @@ public class Switch extends Element {
     PApplet sketch;
 
     public boolean value = false;
+    boolean prevValue = false;
     float x, y, Width, Height, R, sx;
     public float r;
 
@@ -53,6 +54,7 @@ public class Switch extends Element {
         c.line(x - dx, y + R, x + dx, y + R); //        Used because rect has noStroke();
         c.line(x - dx, y - R, x + dx, y - R);
 
+        prevValue = value;
         if (mouseOver()) {
             c.fill(palette.highlight);
             if (sketch.mousePressed) { //   On press - increases purpose and directness (compared to on release)
@@ -68,5 +70,21 @@ public class Switch extends Element {
 
     boolean mouseOver() {
         return PApplet.dist(sketch.mouseX, sketch.mouseY, sx, y) <= r && !disabled;
+    }
+
+    /**
+     * Indicates if the switch has just been switched on
+     * @return True if switch has just been switched on
+     */
+    public boolean toggledOn(){
+        return !prevValue && value;
+    }
+
+    /**
+     * Indicates if the switch has just beeen switched off
+     * @return True if switch has just been switched off
+     */
+    public boolean toggledOff(){
+        return prevValue && !value;
     }
 }

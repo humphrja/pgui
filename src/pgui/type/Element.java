@@ -1,5 +1,6 @@
 package pgui.type;
 
+import processing.core.PApplet;
 import processing.core.PGraphics;
 import pgui.win.*;
 
@@ -19,10 +20,17 @@ public class Element {
      * Colour palette of the element, usually the same as the window
      */
     public Palette palette;
+    // Constants
+    Palette enabledPalette;
+    Palette disabledPalette;
+
+    protected PApplet sketch;
 
     // 'protected' -> can be accessed by subclasses
     protected boolean disabled = false;
     protected boolean hidden = false;
+
+    public String ID;
 
     // Each window has its own colour palette. This palette is transferred to the
     // interface elements within the window
@@ -35,6 +43,10 @@ public class Element {
     public Element(Window win) {
         window = win;
         palette = window.palette;
+        sketch = win.sketch;
+
+        enabledPalette = palette.copy();
+        disabledPalette = palette.fade(window.palette.background, (float) 0.7, sketch);
     }
 
     /** Used for main windows that do not have a parent window
@@ -42,8 +54,10 @@ public class Element {
      * @param cols The colour palette associated with the Element.
      * @see Palette
      */
-    public Element(Palette cols) {
+    public Element(Palette cols, PApplet sketch) {
         palette = cols;
+        enabledPalette = palette.copy();
+        this.sketch = sketch;
     }
 
     /**
@@ -60,6 +74,7 @@ public class Element {
     public void enable(){
         disabled = false;
         hidden = false;
+        palette = enabledPalette;
     }
 
     /**
@@ -68,6 +83,7 @@ public class Element {
     public void disable(){
         disabled = true;
         hidden = false;
+        palette = disabledPalette;
     }
 
     /**
@@ -76,5 +92,9 @@ public class Element {
     public void hide(){
         disabled = true;
         hidden = true;
+    }
+
+    public void setID(String ID){
+        this.ID = ID;
     }
 }

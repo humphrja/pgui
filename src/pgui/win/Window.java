@@ -1,5 +1,6 @@
 package pgui.win; //            This indicates the name of the library from which to import (pgui.*)
 
+import pgui.type.Palette;
 import processing.core.*;
 import java.lang.reflect.*; //  Used for accessing Method types
 import java.util.Arrays; //     Used for appending to arrays
@@ -17,8 +18,6 @@ import pgui.btn.Button;
  * @see Element
  */
 public class Window extends Element {
-    PApplet sketch;
-
     // These arrays contain the window's elements
     /**
      * Contains all {@link Button} objects within the Window.
@@ -71,12 +70,11 @@ public class Window extends Element {
     /**
      * Used for main windows, with no parent window.
      *
-     * @param applet A reference to the Processing sketch
+     * @param sketch A reference to the Processing sketch - use keyword 'this'
      * @param colours The Window's colour palette
      */
-    public Window(PApplet applet, Palette colours) {
-        super(colours);
-        sketch = applet;
+    public Window(PApplet sketch, Palette colours) {
+        super(colours, sketch);
 
         // By default, the dimensions of a window are the screen size (x = y = displayX = displayY = 0)
         Width = sketch.width;
@@ -86,13 +84,12 @@ public class Window extends Element {
     /**
      * Used for sub-windows.
      *
-     * @param applet A reference to the Processing sketch
+     * @param sketch A reference to the Processing sketch
      * @param colours The Window's colour palette
      * @param parent The parent window within which the current window belongs to
      */
-    public Window(PApplet applet, Palette colours, Window parent) {
+    public Window(Palette colours, Window parent) {
         super(parent);
-        sketch = applet;
         palette = colours;
     }
 
@@ -273,7 +270,7 @@ public class Window extends Element {
      * @return The created ScrollWindow object.
      */
     public ScrollWindow addScrollWindow(Palette colours, int swx, int swy, int Width, int Height, int contentHeight) {
-        ScrollWindow sw = new ScrollWindow(sketch, colours, swx + x, swy + y, Width, Height, contentHeight);
+        ScrollWindow sw = new ScrollWindow(this, colours, swx + x, swy + y, Width, Height, contentHeight);
 
         sWindows = Arrays.copyOf(sWindows, sWindows.length + 1);
         sWindows[sWindows.length - 1] = sw;

@@ -1,5 +1,5 @@
 import pgui.win.Window;
-import pgui.win.Palette;
+import pgui.type.Palette;
 import pgui.win.ScrollWindow;
 import pgui.btn.Button;
 import pgui.btn.Slider;

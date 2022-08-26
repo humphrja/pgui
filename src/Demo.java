@@ -1,3 +1,4 @@
+import pgui.type.Palette;
 import processing.core.*;
 import pgui.btn.Button;
 import pgui.win.*;
@@ -112,6 +113,12 @@ public class Demo extends PApplet {
 
     // This is run every frame
     public void draw() {
+        if (windows[7].switches[0].toggledOn()){
+            windows[7].sliders[0].disable();
+        } else if (windows[7].switches[0].toggledOff()){
+            windows[7].sliders[0].enable();
+        }
+
         windows[currentWindow].display(g); // g is the default PGraphics object for the main sketch
     }
 

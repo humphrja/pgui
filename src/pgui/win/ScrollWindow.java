@@ -1,5 +1,6 @@
 package pgui.win;
 
+import pgui.type.Palette;
 import processing.core.*; //            Used for PGraphics
 import processing.event.KeyEvent; //    Used to handle key events
 import processing.event.MouseEvent; //  Used to handle mouse events
@@ -11,8 +12,6 @@ import pgui.txt.Text;
  * @version 1.1
  */
 public class ScrollWindow extends Window {
-    public PApplet sketch;
-
     /**
      * The canvas of the scroll window which the child Elements are displayed to
      */
@@ -32,7 +31,7 @@ public class ScrollWindow extends Window {
     boolean mouseDown = false;
 
     /**
-     * @param applet A reference to the Processing sketch
+     * @param parent A reference to the parent window
      * @param cols The colour palette of the ScrollWindow
      * @param x The position of the ScrollWindow's canvas on the screen.
      * @param y The position of the ScrollWindow's canvas on the screen.
@@ -40,9 +39,8 @@ public class ScrollWindow extends Window {
      * @param h Height of window
      * @param contentH The total content height - the vertical length of the scroll canvas.
      */
-    public ScrollWindow(PApplet applet, Palette cols, int x, int y, int w, int h, int contentH) {
-        super(applet, cols); // This is like creating a new Window object
-        sketch = applet;
+    public ScrollWindow(Window parent, Palette cols, int x, int y, int w, int h, int contentH) {
+        super(cols, parent); // This is like creating a new Window object
 
         // This line of code allows for the mouseEvent handler to be called whenever a mouse event occurs
         sketch.registerMethod("mouseEvent", this);
