@@ -3,7 +3,7 @@ package pgui.btn;
 import processing.core.*;
 import java.lang.reflect.*; // Used for accessing Method types
 
-import pgui.Element;
+import pgui.type.Element;
 import pgui.win.Window;
 
 // A button is displayed as a rectangle with a text label. Buttons can be activated via the mouse to trigger an external event.
@@ -21,7 +21,7 @@ public class Button extends Element {
     public float x, y, Width, Height;
     public int textSize, strokeWeight;
 
-    public boolean disabled, selected, pMousePressed;
+    public boolean selected, pMousePressed;
 
     // When passing in args, use the following format:
     // new Object[] {arg1, arg2, arg3}
@@ -70,15 +70,24 @@ public class Button extends Element {
         activationType = type;
     }
 
-    public boolean mouseOver() { // Returns true if mouse is over button
+    /**
+     * Returns true if mouse is over button
+     * @return If mouse is over button
+     */
+    public boolean mouseOver() {
         return sketch.mouseX >= x + window.displayX + window.translateX
                 && sketch.mouseY >= y + window.displayY + window.translateY
                 && sketch.mouseX <= x + Width + window.displayX + window.translateX
-                && sketch.mouseY <= y + Height + window.displayY + window.translateY;
+                && sketch.mouseY <= y + Height + window.displayY + window.translateY
+                && !disabled;
     }
 
-    public boolean activated() { // Returns if the button has been activated, i.e. when the method should be
-        // triggered
+    /**
+     * Used to determine when the button method should be triggered
+     * @return If the button has been activated
+     */
+    public boolean activated() {
+        if (disabled){return false;};
         if (activationType == "on_press") {
             return !pMousePressed && sketch.mousePressed; // True on first frame of mouse being pressed
         } else if (activationType == "on_release") {
@@ -93,6 +102,8 @@ public class Button extends Element {
     // The PGraphics object is passed as an argument - this is akin to a 'canvas' to
     // draw to. g is the default PGraphics object
     public void display(PGraphics c) {
+        if (hidden){return;}
+
         if (mouseOver() && !disabled) {
             c.fill(palette.highlight);
         } else if (selected) {

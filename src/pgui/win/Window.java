@@ -1,10 +1,11 @@
 package pgui.win; //            This indicates the name of the library from which to import (pgui.*)
 
+import pgui.type.Palette;
 import processing.core.*;
 import java.lang.reflect.*; //  Used for accessing Method types
 import java.util.Arrays; //     Used for appending to arrays
 
-import pgui.Element;
+import pgui.type.Element;
 import pgui.btn.*;
 import pgui.txt.*;
 import pgui.btn.Button;
@@ -17,8 +18,6 @@ import pgui.btn.Button;
  * @see Element
  */
 public class Window extends Element {
-    PApplet sketch;
-
     // These arrays contain the window's elements
     /**
      * Contains all {@link Button} objects within the Window.
@@ -47,7 +46,7 @@ public class Window extends Element {
     Object[] classInstances = new Object[0]; //     Contains the instances of the methods' classes
 
     /**
-     * The position of the window on the parent PGraphics object. Set to 0 by default.
+     * The position of the top left corner of the window on the parent PGraphics object. Set to 0 by default.
      */
     public int x, y;
     /**
@@ -71,12 +70,11 @@ public class Window extends Element {
     /**
      * Used for main windows, with no parent window.
      *
-     * @param applet A reference to the Processing sketch
-     * @param cols The Window's colour palette
+     * @param sketch A reference to the Processing sketch - use keyword 'this'
+     * @param colours The Window's colour palette
      */
-    public Window(PApplet applet, Palette cols) {
-        super(cols);
-        sketch = applet;
+    public Window(PApplet sketch, Palette colours) {
+        super(colours, sketch);
 
         // By default, the dimensions of a window are the screen size (x = y = displayX = displayY = 0)
         Width = sketch.width;
@@ -86,17 +84,18 @@ public class Window extends Element {
     /**
      * Used for sub-windows.
      *
-     * @param applet A reference to the Processing sketch
-     * @param cols The Window's colour palette
+     * @param sketch A reference to the Processing sketch
+     * @param colours The Window's colour palette
      * @param parent The parent window within which the current window belongs to
      */
-    public Window(PApplet applet, Palette cols, Window parent) {
+    public Window(Palette colours, Window parent) {
         super(parent);
-        sketch = applet;
-        palette = cols;
+        palette = colours;
     }
 
     public void display(PGraphics c) { // c is short for canvas
+        if (hidden){return;}
+
         c.beginDraw();
         c.noStroke();
         c.fill(palette.background);
@@ -117,6 +116,8 @@ public class Window extends Element {
             // such as translations, scaling, etc.
         }
 
+        c.colorMode(PConstants.RGB, 255);
+
         for (Button b : btns) { // Display buttons
             b.display(c);
         }
@@ -126,15 +127,14 @@ public class Window extends Element {
         }
 
         for (ScrollWindow sw : sWindows) { // Display scroll windows
-            // Scroll windows display to a different PGraphics object (canvas) than the window itself
-            sw.swdisplay(c);
+            sw.display(c);
         }
 
-        for (Slider s : sliders) {
+        for (Slider s : sliders) { // Display sliders
             s.display(c);
         }
 
-        for (Switch s : switches) {
+        for (Switch s : switches) { // Display switches
             s.display(c);
         }
 
@@ -152,20 +152,20 @@ public class Window extends Element {
     /**
      * A method to set the dimensions and position of the window.
      *
-     * @param xpos Value to set {@link Window#x}
-     * @param ypos Value to set {@link Window#y}
-     * @param w Value to set {@link Window#Width}
-     * @param h Value to set {@link Window#Height}
-     * @param Dx Value to set {@link Window#displayX}
-     * @param Dy Value to set {@link Window#displayY}
+     * @param x {@link Window#x}
+     * @param y {@link Window#y}
+     * @param Width {@link Window#Width}
+     * @param Height {@link Window#Height}
+     * @param displayX {@link Window#displayX}
+     * @param displayY {@link Window#displayY}
      */
-    public void setDimensions(int xpos, int ypos, int w, int h, int Dx, int Dy) { // Used to override window's default dimensions
-        x = xpos; //        Position of window on PGraphics object
-        y = ypos;
-        Width = w;
-        Height = h;
-        displayX = Dx; //   Position of PGraphics object on screen
-        displayY = Dy;
+    public void setDimensions(int x, int y, int Width, int Height, int displayX, int displayY) { // Used to override window's default dimensions
+        this.x = x; //        Position of window on PGraphics object
+        this.y = y;
+        this.Width = Width;
+        this.Height = Height;
+        this.displayX = displayX; //   Position of PGraphics object on screen
+        this.displayY = displayY;
     }
 
     /**
@@ -205,15 +205,15 @@ public class Window extends Element {
      * @param methodArgs The parameters to be passed to the Button's activation method
      * @param instance An instance of the Class the method belongs to. Use keyword 'this' if the method is defined within the Processing Editor without a class.
      * @param label The Button's label - {@link Button#label}
-     * @param btnx The position of the Button relative to the Window
-     * @param btny The position of the Button relative to the Window
-     * @param w The Button's width - {@link Button#Width}
-     * @param h The Button's Height - {@link Button#Height}
+     * @param btnx The position of the Button's top left corner relative to the Window
+     * @param btny The position of the Button's top left corner relative to the Window
+     * @param Width The Button's width - {@link Button#Width}
+     * @param Height The Button's height - {@link Button#Height}
      * @return The created Button.
      */
     public Button addButton(String methodName, Object[] methodArgs, Object instance, String label, float btnx,
-            float btny, float w, float h) {
-        Button btn = new Button(sketch, methodName, methodArgs, instance, label, btnx + x, btny + y, w, h, this);
+            float btny, float Width, float Height) {
+        Button btn = new Button(sketch, methodName, methodArgs, instance, label, btnx + x, btny + y, Width, Height, this);
 
         btns = Arrays.copyOf(btns, btns.length + 1);
         btns[btns.length - 1] = btn;
@@ -221,6 +221,16 @@ public class Window extends Element {
         return btn;
     }
 
+    /**
+     * Adds a {@link Text} object to the Window.
+     *
+     * @see Text#align(int, int)
+     * @param text The string to be displayed.
+     * @param tx x position relative to Window
+     * @param ty y position relative to Window
+     * @param size Text size
+     * @return The created Text object.
+     */
     public Text addText(String text, float tx, float ty, int size) {
         Text txt = new Text(text, tx + x, ty + y, size, this);
 
@@ -230,8 +240,19 @@ public class Window extends Element {
         return txt;
     }
 
-    public Slider addSlider(float min, float max, float sx, float sy, float l) {
-        Slider slider = new Slider(sketch, min, max, sx + x, sy + y, l, this);
+    /**
+     * Adds a {@link Slider} to the Window.
+     * @see Slider#setAxis(char, int)
+     *
+     * @param min Minimum slider value
+     * @param max Maximum slider value
+     * @param sx Centre x position relative to Window
+     * @param sy Centre y position relative to Window
+     * @param length Length of slider
+     * @return The created Slider object.
+     */
+    public Slider addSlider(float min, float max, float sx, float sy, float length) {
+        Slider slider = new Slider(sketch, min, max, sx + x, sy + y, length, this);
 
         sliders = Arrays.copyOf(sliders, sliders.length + 1);
         sliders[sliders.length - 1] = slider;
@@ -239,8 +260,19 @@ public class Window extends Element {
         return slider;
     }
 
-    public ScrollWindow addScrollWindow(Palette cols, int swx, int swy, int w, int h, int ch) {
-        ScrollWindow sw = new ScrollWindow(sketch, cols, swx + x, swy + y, w, h, ch);
+    /**
+     * Adds a {@link ScrollWindow} to the Window.
+     *
+     * @param colours The colour palette for the ScrollWindow
+     * @param swx The x position of top left corner relative to parent Window
+     * @param swy The y position of top left corner relative to parent Window
+     * @param Width
+     * @param Height
+     * @param contentHeight The vertical length of the scroll canvas
+     * @return The created ScrollWindow object.
+     */
+    public ScrollWindow addScrollWindow(Palette colours, int swx, int swy, int Width, int Height, int contentHeight) {
+        ScrollWindow sw = new ScrollWindow(this, colours, swx + x, swy + y, Width, Height, contentHeight);
 
         sWindows = Arrays.copyOf(sWindows, sWindows.length + 1);
         sWindows[sWindows.length - 1] = sw;
@@ -248,8 +280,16 @@ public class Window extends Element {
         return sw;
     }
 
-    public Switch addSwitch(float cx, float cy, float w, float h) {
-        Switch s = new Switch(sketch, cx, cy, w, h, this);
+    /**
+     * Adds a toggle switch to the Window.
+     * @param cx Centre x relative to Window
+     * @param cy Centre y relative to Window
+     * @param Width
+     * @param Height
+     * @return The created switch object.
+     */
+    public Switch addSwitch(float cx, float cy, float Width, float Height) {
+        Switch s = new Switch(sketch, cx, cy, Width, Height, this);
 
         switches = Arrays.copyOf(switches, switches.length + 1);
         switches[switches.length - 1] = s;
@@ -257,8 +297,15 @@ public class Window extends Element {
         return s;
     }
 
-    // Provide the appropriate visual function(s) the window should display by
-    // adding a method to the window
+
+    /**
+     * Provide the appropriate visual function(s) the window should display by adding a method to the window
+     *
+     * @param mName Name of visual method
+     * @param args Method arguments
+     * @param classInstance Instance of parent class of method
+     * @return The visual method
+     */
     public Method addContent(String mName, Object[] args, Object classInstance) {
         Method displayContent = null;
 

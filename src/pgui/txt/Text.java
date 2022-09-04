@@ -1,6 +1,6 @@
 package pgui.txt; // This indicates the name of the library from which to import (pgui.Text.*)
 
-import pgui.Element;
+import pgui.type.Element;
 import pgui.win.Window;
 import processing.core.*;
 // import processing.core.PApplet.*;
@@ -44,6 +44,8 @@ public class Text extends Element {
     }
 
     public void display(PGraphics c) {
+        if (hidden){return;}
+
         c.textAlign(alignX, alignY);
         c.textSize(size);
 

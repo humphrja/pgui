@@ -1,19 +1,17 @@
 package pgui.btn;
 
-import pgui.Element;
+import pgui.type.Element;
 import pgui.win.Window;
 import processing.core.*;
 
 public class Switch extends Element {
-    PApplet sketch;
-
     public boolean value = false;
+    boolean prevValue = false;
     float x, y, Width, Height, R, sx;
     public float r;
 
     public Switch(PApplet applet, float cx, float cy, float w, float h, Window window) {
         super(window);
-        sketch = applet;
 
         x = cx; //      Center x
         y = cy; //      Center y
@@ -24,6 +22,8 @@ public class Switch extends Element {
     }
 
     public void display(PGraphics c) {
+        if (hidden){return;}
+
         float dx = Width / 2 - R; //  Distance between x & start of arc
 
         if (value) { // On
@@ -51,6 +51,7 @@ public class Switch extends Element {
         c.line(x - dx, y + R, x + dx, y + R); //        Used because rect has noStroke();
         c.line(x - dx, y - R, x + dx, y - R);
 
+        prevValue = value;
         if (mouseOver()) {
             c.fill(palette.highlight);
             if (sketch.mousePressed) { //   On press - increases purpose and directness (compared to on release)
@@ -65,6 +66,22 @@ public class Switch extends Element {
     }
 
     boolean mouseOver() {
-        return PApplet.dist(sketch.mouseX, sketch.mouseY, sx, y) <= r;
+        return PApplet.dist(sketch.mouseX, sketch.mouseY, sx, y) <= r && !disabled;
+    }
+
+    /**
+     * Indicates if the switch has just been switched on
+     * @return True if switch has just been switched on
+     */
+    public boolean toggledOn(){
+        return !prevValue && value;
+    }
+
+    /**
+     * Indicates if the switch has just beeen switched off
+     * @return True if switch has just been switched off
+     */
+    public boolean toggledOff(){
+        return prevValue && !value;
     }
 }
