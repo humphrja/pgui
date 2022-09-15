@@ -34,6 +34,7 @@ public class Switch extends Element {
             c.noFill();
         }
 
+        c.stroke(palette.stroke);
         c.strokeWeight(2);
         //    centerX, centerY, xDiameter, yDiameter, angleStart, angleEnd
         c.arc(x - dx, y, 2 * R, 2 * R, PApplet.HALF_PI, 3 * PApplet.HALF_PI); //     Left arc

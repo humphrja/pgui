@@ -105,9 +105,9 @@ public class Demo extends PApplet {
         createBackToHomeBtn(w7);
 
         w7.addSlider(0, 360, width / 2, height - 200, 500);
-        Text t = w7.addText("Hue", width/2, height - 250, 20);
-        t.align(CENTER, BOTTOM);
-        Slider s = w7.addSlider(50, 450, width - 200, height / 2, 200);
+        Text t = w7.addText("Hue", width/2, height - 170, 20);
+        t.align(CENTER, TOP);
+        Slider s = w7.addSlider(25, 225, width - 200, height / 2, 200);
         s.setAxis('v', LEFT);
         Text t2 = w7.addText("Radius", width - 200, height/2 - 200/2 - 10, 20);
         t2.align(CENTER, BOTTOM);
@@ -120,6 +120,10 @@ public class Demo extends PApplet {
 
         w7.addSwitch(width - 100, height/2, 80, 45);
         w7.addText("Hide", width - 100, height/2 - 50, 20);
+
+        w7.addRadioButtonGroup(width/6, height/2 - 80, (float) 10, 80, new String[] {"Circle", "Triangle", "Square", "Pentagon"});
+        w7.radBtns[0].setIndex(0);
+
         windows[7] = w7;
         //
     }
@@ -213,11 +217,41 @@ public class Demo extends PApplet {
     public void sliderExample() {
         float hue = windows[7].sliders[0].value;
         float radius = windows[7].sliders[1].value;
+        int shape = windows[7].radBtns[0].index;
         colorMode(HSB, 360, 100, 100);
-        strokeWeight(2);
-        stroke(0);
+        strokeWeight(3);
+        stroke(360);
         fill(hue, 100, 100);
-        ellipse(width / 2, height / 2, radius, radius);
+//        switch (shape){
+//            case (0):   // Circle
+//                circle(width / 2, height / 2, 2*radius);
+//                break;
+//            case (1):   // Triangle
+//                beginShape();
+//                for (float a = 0; a <= TWO_PI; a += TWO_PI/3){
+//                    vertex(width/2 + radius*cos(a), height/2 + radius*sin(a));
+//                }
+//                endShape();
+////                pushMatrix();
+////                translate(width/2, height/2);
+////                triangle(0, -radius, radius*sqrt(3)/2, radius/2, -radius*sqrt(3)/2, radius/2);
+////                popMatrix();
+//                break;
+//            case (2):   // Square
+//                square(width/2 - radius, height/2 - radius, 2*radius);
+//                break;
+//        }
+
+
+        if (shape > 0){
+            beginShape();
+            for (float a = -HALF_PI; a <= TWO_PI-HALF_PI; a += TWO_PI/(shape+2)){
+                vertex(width/2 + radius*cos(a), height/2 + radius*sin(a));
+            }
+            endShape();
+        } else {
+            circle(width / 2, height / 2, 2*radius);
+        }
         colorMode(RGB, 255, 255, 255);
     }
 

@@ -9,8 +9,6 @@ import pgui.win.Window;
 // A button is displayed as a rectangle with a text label. Buttons can be activated via the mouse to trigger an external event.
 
 public class Button extends Element {
-    PApplet sketch;
-
     Method event; //            The button triggers this event (method) when it is activated
     Object[] eventArgs; //      The arguments passed into the event method
     Object tempObj; //          A temporary instance of the class used for invoking the event method

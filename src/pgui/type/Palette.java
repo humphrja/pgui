@@ -1,6 +1,5 @@
 package pgui.type;
 
-import pgui.type.Element;
 import pgui.win.Window;
 import processing.core.PApplet;
 
@@ -14,7 +13,14 @@ import processing.core.PApplet;
  */
 public class Palette {
 
-    public int background, stroke;
+    /**
+     * Background colour for Windows
+     */
+    public int background;
+    /**
+     * The stroke colour for elements - shape outlines, text colour, etc.
+     */
+    public int stroke;
     /**
      * Main fill colour for elements
      */
@@ -29,16 +35,21 @@ public class Palette {
     public int select;
 
     /**
-     * Use the <a href="https://processing.org/reference/color_.html">color()</a> method for the parameters.
+     * This defines the colours stored within the Palette.
+     * Use the <a href="https://processing.org/reference/color_.html">color()</a> method for each parameters.
      *
-     * @param colors The colours stored within the Palette
+     * @param background {@link Palette#background}
+     * @param stroke {@link Palette#stroke}
+     * @param primary {@link Palette#primary}
+     * @param highlight {@link Palette#highlight}
+     * @param select {@link Palette#select}
      */
-    public Palette(int... colors) {
-        background = colors[0];
-        stroke = colors[1];
-        primary = colors[2];
-        highlight = colors[3];
-        select = colors[4];
+    public Palette(int background, int stroke, int primary, int highlight, int select) {
+        this.background = background;
+        this.stroke = stroke;
+        this.primary = primary;
+        this.highlight = highlight;
+        this.select = select;
     }
 
     /**
