@@ -39,6 +39,10 @@ public class Window extends Element {
      * Contains all {@link Switch} objects within the Window.
      */
     public Switch[] switches = new Switch[0];
+    /**
+     * Contains all {@link RadioButtonGroup} objects within the Window.
+     */
+    public RadioButtonGroup[] radBtns = new RadioButtonGroup[0];
 
     // These 3 arrays are used for displaying any visual methods
     Method[] displayMethods = new Method[0]; //     Contains the display methods
@@ -136,6 +140,10 @@ public class Window extends Element {
 
         for (Switch s : switches) { // Display switches
             s.display(c);
+        }
+
+        for (RadioButtonGroup rbg : radBtns){
+            rbg.display(c);
         }
 
         if (border) { // Display border
@@ -295,6 +303,25 @@ public class Window extends Element {
         switches[switches.length - 1] = s;
 
         return s;
+    }
+
+    /**
+     * Adds a group of radio buttons to the Window.
+     *
+     * @param x x-coordinate of the centre of the first button
+     * @param y y-coordinate of the centre of the first button
+     * @param r Radius of each button
+     * @param spacing Distance between each button
+     * @param labels An array containing each RadioButton's label
+     * @return The create RadioButtonGroup object.
+     */
+    public RadioButtonGroup addRadioButtonGroup(float x, float y, float r, float spacing, String[] labels){
+        RadioButtonGroup rbg = new RadioButtonGroup(this, x, y, r, spacing, labels);
+
+        radBtns = Arrays.copyOf(radBtns,radBtns.length + 1);
+        radBtns[radBtns.length - 1] = rbg;
+
+        return rbg;
     }
 
 

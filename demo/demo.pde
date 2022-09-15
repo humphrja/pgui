@@ -101,7 +101,7 @@ void setup() {
   w7.addSlider(0, 360, width / 2, height - 200, 500);
   Text t = w7.addText("Hue", width/2, height - 250, 20);
   t.align(CENTER, BOTTOM);
-  Slider s = w7.addSlider(50, 450, width - 200, height / 2, 200);
+  Slider s = w7.addSlider(25, 225, width - 200, height / 2, 200);
   s.setAxis('v', LEFT);
   Text t2 = w7.addText("Radius", width - 200, height/2 - 200/2 - 10, 20);
   t2.align(CENTER, BOTTOM);
@@ -114,32 +114,34 @@ void setup() {
 
   w7.addSwitch(width - 100, height/2, 80, 45);
   w7.addText("Hide", width - 100, height/2 - 50, 20);
+
+  w7.addRadioButtonGroup(width/6, height/2 - 80, (float) 10, 80, new String[] {"Circle", "Triangle", "Square", "Pentagon"});
+  w7.radBtns[0].setIndex(0);
+
   windows[7] = w7;
   //
 }
 
 
 void draw() {
-    // These are used to handle what happens when switches are turned on or off
-    if (windows[7].switches[0].toggledOn()){
-        windows[7].sliders[0].disable();
-        windows[7].texts[1].disable();
-    } else if (windows[7].switches[0].toggledOff()){
-        windows[7].sliders[0].enable();
-        windows[7].texts[1].enable();
-    }
+  // These are used to handle what happens when switches are turned on or off
+  if (windows[7].switches[0].toggledOn()) {
+    windows[7].sliders[0].disable();
+    windows[7].texts[1].disable();
+  } else if (windows[7].switches[0].toggledOff()) {
+    windows[7].sliders[0].enable();
+    windows[7].texts[1].enable();
+  }
 
-    if (windows[7].switches[1].toggledOn()){
-        windows[7].sliders[1].hide();
-        windows[7].texts[2].hide();
-    } else if (windows[7].switches[1].toggledOff()){
-        windows[7].sliders[1].enable();
-        windows[7].texts[2].enable();
-    }
+  if (windows[7].switches[1].toggledOn()) {
+    windows[7].sliders[1].hide();
+    windows[7].texts[2].hide();
+  } else if (windows[7].switches[1].toggledOff()) {
+    windows[7].sliders[1].enable();
+    windows[7].texts[2].enable();
+  }
 
   windows[currentWindow].display(g); // g is the default PGraphics object for the main sketch
-  
-  println(windows[7].switches[0].palette.highlight);
 }
 
 
@@ -205,11 +207,28 @@ public void addNewButton(Window window) {
 public void sliderExample() {
   float hue = windows[7].sliders[0].value;
   float radius = windows[7].sliders[1].value;
+  int shape = windows[7].radBtns[0].index;
   colorMode(HSB, 360, 100, 100);
-  strokeWeight(2);
-  stroke(0);
+  strokeWeight(3);
+  stroke(360);
   fill(hue, 100, 100);
-  ellipse(width / 2, height / 2, radius, radius);
+
+
+  switch (shape) {
+    case (0):   // Circle
+    circle(width / 2, height / 2, 2*radius);
+    break;
+
+    case (1):   // Triangle
+    triangle(width/2, height/2 - radius, width/2 + radius*sqrt(3)/2, height/2 + radius/2, width/2 - radius*sqrt(3)/2, height/2 + radius/2);
+    break;
+
+    case (2):   // Square
+    square(width/2 - radius, height/2 - radius, 2*radius);
+    break;
+  }
+
+  colorMode(RGB, 255, 255, 255);
 }
 
 public void sliderExample2(ScrollWindow win) {
