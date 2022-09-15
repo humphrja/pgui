@@ -88,7 +88,6 @@ public class Window extends Element {
     /**
      * Used for sub-windows.
      *
-     * @param sketch A reference to the Processing sketch
      * @param colours The Window's colour palette
      * @param parent The parent window within which the current window belongs to
      */
