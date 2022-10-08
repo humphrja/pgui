@@ -39,8 +39,7 @@ public class Button extends Element {
 
         // Searches through the array by method name and assigns onPress to the corresponding method
         for (Method m : methods) {
-            if (m.getName() == mName) {
-                // println(m);
+            if (m.getName().equals(mName)) {
                 event = m;
             }
         }
@@ -69,8 +68,8 @@ public class Button extends Element {
     }
 
     /**
-     * Returns true if mouse is over button
-     * @return If mouse is over button
+     * Returns true if mouse (or TAB) is over button
+     * @return If mouse (or TAB) is over button
      */
     public boolean mouseOver() {
         return sketch.mouseX >= x + window.displayX + window.translateX
@@ -85,7 +84,7 @@ public class Button extends Element {
      * @return If the button has been activated
      */
     public boolean activated() {
-        if (disabled){return false;};
+        if (disabled){return false;}
         if (activationType == "on_press") {
             return !pMousePressed && sketch.mousePressed; // True on first frame of mouse being pressed
         } else if (activationType == "on_release") {
@@ -102,7 +101,7 @@ public class Button extends Element {
     public void display(PGraphics c) {
         if (hidden){return;}
 
-        if (mouseOver() && !disabled) {
+        if ((mouseOver() || tabbed()) && !disabled) {
             c.fill(palette.highlight);
         } else if (selected) {
             c.fill(palette.select);
@@ -121,14 +120,18 @@ public class Button extends Element {
         c.textSize(textSize);
         c.text(label, x, y, Width, Height); // Draw button text
 
-        if (mouseOver() && activated() && !disabled) { // If button is activated
+        if ((mouseOver() && activated() || tabbed() && triggerKeyPressed && !pTriggerKeyPressed) && !disabled) { // If button is activated
+            System.out.println(label);
             try {
                 event.invoke(tempObj, eventArgs); // Invoke method = call function
-            } catch (Exception e) { // Handle any errors (Java requirement)
+            } catch (NullPointerException e) { // Handle any errors (Java requirement)
+                e.printStackTrace();
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
 
         pMousePressed = sketch.mousePressed;
+        pTriggerKeyPressed = triggerKeyPressed;
     }
 }

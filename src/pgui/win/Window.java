@@ -9,6 +9,7 @@ import pgui.type.Element;
 import pgui.btn.*;
 import pgui.txt.*;
 import pgui.btn.Button;
+import processing.event.KeyEvent;
 
 /**
  * A Window is a class that contains a collection of 'elements' - other interface objects, such as buttons, text or other windows.
@@ -18,6 +19,9 @@ import pgui.btn.Button;
  * @see Element
  */
 public class Window extends Element {
+
+    public Element[] elements = new Element[0];
+
     // These arrays contain the window's elements
     /**
      * Contains all {@link Button} objects within the Window.
@@ -71,6 +75,13 @@ public class Window extends Element {
      */
     int borderStrokeWeight = 0;
 
+    public boolean tabbing;    // currently tabbing through elements
+    boolean shifting;   // SHIFT is pressed - used to iterate backwards
+    int tabIndex;
+    int pTabIndex;      // previous
+
+    public boolean displaying;
+
     /**
      * Used for main windows, with no parent window.
      *
@@ -83,6 +94,9 @@ public class Window extends Element {
         // By default, the dimensions of a window are the screen size (x = y = displayX = displayY = 0)
         Width = sketch.width;
         Height = sketch.height;
+
+        // This line of code allows for the keyEvent handler to be called whenever a key event occurs
+        sketch.registerMethod("keyEvent", this);
     }
 
     /**
@@ -102,7 +116,7 @@ public class Window extends Element {
         c.beginDraw();
         c.noStroke();
         c.fill(palette.background);
-        c.rect(x, y, Width, Height); // Background
+        c.rect(x, y, Width, Height);    // Background
 
         c.translate(translateX, translateY);
 
@@ -121,28 +135,9 @@ public class Window extends Element {
 
         c.colorMode(PConstants.RGB, 255);
 
-        for (Button b : btns) { // Display buttons
-            b.display(c);
-        }
-
-        for (Text t : texts) { // Display text
-            t.display(c);
-        }
-
-        for (ScrollWindow sw : sWindows) { // Display scroll windows
-            sw.display(c);
-        }
-
-        for (Slider s : sliders) { // Display sliders
-            s.display(c);
-        }
-
-        for (Switch s : switches) { // Display switches
-            s.display(c);
-        }
-
-        for (RadioButtonGroup rbg : radBtns){
-            rbg.display(c);
+        // Display all elements
+        for (Element e : elements){
+            e.display(c);
         }
 
         if (border) { // Display border
@@ -152,8 +147,16 @@ public class Window extends Element {
             c.rect(0, 0, Width, Height);
         }
 
+        // May need to replace this in the future with a registerMethod (like for key events - press, release, etc.)
+        if (sketch.mousePressed){
+            tabbing = false;
+            elements[tabIndex].setTabbed(false);
+        }
+
         c.translate(-translateX, -translateY);
         c.endDraw();
+
+        displaying = false;
     }
 
     /**
@@ -196,132 +199,85 @@ public class Window extends Element {
         t.underline(5 * Width / 6);
     }
 
-    // These methods are used to add interface elements to the window. Note that a
-    // palette is not required as the elements inherit the window's palette
-    // All of these methods are of the form:
-    // Create new interface object
-    // Append object to appropriate array
-    // Return interface object
-
-    // The created object is returned so as to easily override any default parameters
-
     /**
-     * Adds a {@link Button} to the Window.
+     * This is called whenever there is keyboard input and handles the key events to call a corresponding method.
      *
-     * @param methodName The name of the method the Button will invoke
-     * @param methodArgs The parameters to be passed to the Button's activation method
-     * @param instance An instance of the Class the method belongs to. Use keyword 'this' if the method is defined within the Processing Editor without a class.
-     * @param label The Button's label - {@link Button#label}
-     * @param btnx The position of the Button's top left corner relative to the Window
-     * @param btny The position of the Button's top left corner relative to the Window
-     * @param Width The Button's width - {@link Button#Width}
-     * @param Height The Button's height - {@link Button#Height}
-     * @return The created Button.
+     * @param e The corresponding key event
+     * @see KeyEvent
      */
-    public Button addButton(String methodName, Object[] methodArgs, Object instance, String label, float btnx,
-            float btny, float Width, float Height) {
-        Button btn = new Button(sketch, methodName, methodArgs, instance, label, btnx + x, btny + y, Width, Height, this);
-
-        btns = Arrays.copyOf(btns, btns.length + 1);
-        btns[btns.length - 1] = btn;
-
-        return btn;
+    public void keyEvent(KeyEvent e) {
+        if (displaying) {
+            switch (e.getAction()) {
+                case (KeyEvent.PRESS):
+                    keyPressed(e);
+                    break;
+                case (KeyEvent.RELEASE):
+                    keyReleased(e);
+                    break;
+            }
+        }
     }
 
-    /**
-     * Adds a {@link Text} object to the Window.
-     *
-     * @see Text#align(int, int)
-     * @param text The string to be displayed.
-     * @param tx x position relative to Window
-     * @param ty y position relative to Window
-     * @param size Text size
-     * @return The created Text object.
-     */
-    public Text addText(String text, float tx, float ty, int size) {
-        Text txt = new Text(text, tx + x, ty + y, size, this);
-
-        texts = Arrays.copyOf(texts, texts.length + 1);
-        texts[texts.length - 1] = txt;
-
-        return txt;
+    void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()){
+            case (PConstants.SHIFT):    // Important for combining keys together
+                shifting = false;
+                break;
+            case (PConstants.ENTER):
+            case (PConstants.RETURN):
+            case (' '):
+                System.out.println("ENTER/RETURN/space released.");
+                elements[tabIndex].triggerKeyPressed = true;
+                break;
+        }
     }
 
-    /**
-     * Adds a {@link Slider} to the Window.
-     * @see Slider#setAxis(char, int)
-     *
-     * @param min Minimum slider value
-     * @param max Maximum slider value
-     * @param sx Centre x position relative to Window
-     * @param sy Centre y position relative to Window
-     * @param length Length of slider
-     * @return The created Slider object.
-     */
-    public Slider addSlider(float min, float max, float sx, float sy, float length) {
-        Slider slider = new Slider(sketch, min, max, sx + x, sy + y, length, this);
+    void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case (PConstants.SHIFT):    // Combined with TAB/ENTER for order
+                shifting = true;
+                break;
+            case (PConstants.TAB):  // Cycle through elements
+                handleTabPress();
+                break;
 
-        sliders = Arrays.copyOf(sliders, sliders.length + 1);
-        sliders[sliders.length - 1] = slider;
-
-        return slider;
+            // Necessary to reset triggerKeyPressed back to false
+            default:
+                elements[tabIndex].triggerKeyPressed = false;
+                break;
+        }
     }
 
-    /**
-     * Adds a {@link ScrollWindow} to the Window.
-     *
-     * @param colours The colour palette for the ScrollWindow
-     * @param swx The x position of top left corner relative to parent Window
-     * @param swy The y position of top left corner relative to parent Window
-     * @param Width
-     * @param Height
-     * @param contentHeight The vertical length of the scroll canvas
-     * @return The created ScrollWindow object.
-     */
-    public ScrollWindow addScrollWindow(Palette colours, int swx, int swy, int Width, int Height, int contentHeight) {
-        ScrollWindow sw = new ScrollWindow(this, colours, swx + x, swy + y, Width, Height, contentHeight);
+    void handleTabPress(){
+        if (tabbing) {
+            pTabIndex = tabIndex;
+            if (shifting) {      // Shift is used to iterate backwards
+                tabIndex--;
+            } else {
+                tabIndex++;
+            }
 
-        sWindows = Arrays.copyOf(sWindows, sWindows.length + 1);
-        sWindows[sWindows.length - 1] = sw;
+            // Adding elements.length before taking modulo allows for cycling backwards, below zero
+            tabIndex = (tabIndex + elements.length) % elements.length;
+        }
+        tabbing = true;
 
-        return sw;
+        elements[pTabIndex].setTabbed(false);
+        elements[tabIndex].setTabbed(true);
+
+        System.out.println("TAB index ID " + elements[tabIndex].ID);
     }
 
-    /**
-     * Adds a toggle switch to the Window.
-     * @param cx Centre x relative to Window
-     * @param cy Centre y relative to Window
-     * @param Width
-     * @param Height
-     * @return The created switch object.
-     */
-    public Switch addSwitch(float cx, float cy, float Width, float Height) {
-        Switch s = new Switch(sketch, cx, cy, Width, Height, this);
+//    /**
+//     * Returns the element of the specific ID. If none found, returns null.
+//     * A convenience method for {@link ElementList#get}
+//     * @param ID ID of Element
+//     * @return Element with given ID
+//     */
+//    public Element getElement(String ID){
+//        return elements.get(ID);
+//    }
 
-        switches = Arrays.copyOf(switches, switches.length + 1);
-        switches[switches.length - 1] = s;
-
-        return s;
-    }
-
-    /**
-     * Adds a group of radio buttons to the Window.
-     *
-     * @param x x-coordinate of the centre of the first button
-     * @param y y-coordinate of the centre of the first button
-     * @param r Radius of each button
-     * @param spacing Distance between each button
-     * @param labels An array containing each RadioButton's label
-     * @return The create RadioButtonGroup object.
-     */
-    public RadioButtonGroup addRadioButtonGroup(float x, float y, float r, float spacing, String[] labels){
-        RadioButtonGroup rbg = new RadioButtonGroup(this, x, y, r, spacing, labels);
-
-        radBtns = Arrays.copyOf(radBtns,radBtns.length + 1);
-        radBtns[radBtns.length - 1] = rbg;
-
-        return rbg;
-    }
 
 
     /**
@@ -357,5 +313,131 @@ public class Window extends Element {
         classInstances[classInstances.length - 1] = classInstance;
 
         return displayContent;
+    }
+
+    // These methods are used to add interface elements to the window. Note that a
+    // palette is not required as the elements inherit the window's palette
+    // All of these methods are of the form:
+    // Create new interface object
+    // Append object to appropriate array
+    // Return interface object
+
+    // The created object is returned so as to easily override any default parameters
+
+    // A method to append an element of any type to its corresponding array
+    <Any extends Element> Any[] appendElement(Any element, Any[] arr){
+        // set Element's ID
+        String ID = element.abbr() + "#" + String.format("%03d", arr.length);
+        element.setID(ID);
+
+        // Appends element to corresponding array
+        arr = Arrays.copyOf(arr, arr.length + 1);
+        arr[arr.length - 1] = element;
+
+        // Appends element to ElementList
+        elements = Arrays.copyOf(elements, elements.length + 1);
+        elements[elements.length - 1] = element;
+
+        return arr;
+    }
+
+    /**
+     * Adds a {@link Button} to the Window.
+     *
+     * @param methodName The name of the method the Button will invoke
+     * @param methodArgs The parameters to be passed to the Button's activation method
+     * @param instance An instance of the Class the method belongs to. Use keyword 'this' if the method is defined within the Processing Editor without a class.
+     * @param label The Button's label - {@link Button#label}
+     * @param btnx The position of the Button's top left corner relative to the Window
+     * @param btny The position of the Button's top left corner relative to the Window
+     * @param Width The Button's width - {@link Button#Width}
+     * @param Height The Button's height - {@link Button#Height}
+     * @return The created Button.
+     */
+    public Button addButton(String methodName, Object[] methodArgs, Object instance, String label, float btnx,
+                            float btny, float Width, float Height) {
+        Button btn = new Button(sketch, methodName, methodArgs, instance, label, btnx + x, btny + y, Width, Height, this);
+        btns = appendElement(btn, btns);
+        return btn;
+    }
+
+    /**
+     * Adds a {@link Text} object to the Window.
+     *
+     * @see Text#align(int, int)
+     * @param text The string to be displayed.
+     * @param tx x position relative to Window
+     * @param ty y position relative to Window
+     * @param size Text size
+     * @return The created Text object.
+     */
+    public Text addText(String text, float tx, float ty, int size) {
+        Text txt = new Text(text, tx + x, ty + y, size, this);
+        texts = appendElement(txt, texts);
+        return txt;
+    }
+
+    /**
+     * Adds a {@link Slider} to the Window.
+     * @see Slider#setAxis(int)
+     *
+     * @param min Minimum slider value
+     * @param max Maximum slider value
+     * @param sx Centre x position relative to Window
+     * @param sy Centre y position relative to Window
+     * @param length Length of slider
+     * @return The created Slider object.
+     */
+    public Slider addSlider(float min, float max, float sx, float sy, float length) {
+        Slider slider = new Slider(min, max, sx + x, sy + y, length, this);
+        sliders = appendElement(slider, sliders);
+        return slider;
+    }
+
+    /**
+     * Adds a {@link ScrollWindow} to the Window.
+     *
+     * @param colours The colour palette for the ScrollWindow
+     * @param swx The x position of top left corner relative to parent Window
+     * @param swy The y position of top left corner relative to parent Window
+     * @param Width
+     * @param Height
+     * @param contentHeight The vertical length of the scroll canvas
+     * @return The created ScrollWindow object.
+     */
+    public ScrollWindow addScrollWindow(Palette colours, int swx, int swy, int Width, int Height, int contentHeight) {
+        ScrollWindow sw = new ScrollWindow(this, colours, swx + x, swy + y, Width, Height, contentHeight);
+        sWindows = appendElement(sw, sWindows);
+        return sw;
+    }
+
+    /**
+     * Adds a toggle switch to the Window.
+     * @param cx Centre x relative to Window
+     * @param cy Centre y relative to Window
+     * @param Width
+     * @param Height
+     * @return The created switch object.
+     */
+    public Switch addSwitch(float cx, float cy, float Width, float Height) {
+        Switch s = new Switch(cx, cy, Width, Height, this);
+        switches = appendElement(s, switches);
+        return s;
+    }
+
+    /**
+     * Adds a group of radio buttons to the Window.
+     *
+     * @param x x-coordinate of the centre of the first button
+     * @param y y-coordinate of the centre of the first button
+     * @param r Radius of each button
+     * @param spacing Distance between each button
+     * @param labels An array containing each RadioButton's label
+     * @return The create RadioButtonGroup object.
+     */
+    public RadioButtonGroup addRadioButtonGroup(float x, float y, float r, float spacing, String[] labels){
+        RadioButtonGroup rbg = new RadioButtonGroup(this, x, y, r, spacing, labels);
+        radBtns = appendElement(rbg, radBtns);
+        return rbg;
     }
 }

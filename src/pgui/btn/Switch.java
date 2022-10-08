@@ -4,19 +4,32 @@ import pgui.type.Element;
 import pgui.win.Window;
 import processing.core.*;
 
+/**
+ * A switch that can be toggled between two states - on/off
+ */
 public class Switch extends Element {
+    /**
+     * Switch state (on/off) -> value (True/False)
+     */
     public boolean value = false;
     boolean prevValue = false;
-    float x, y, Width, Height, R, sx;
-    public float r;
+    float x, y, Width, Height, R, r, sx;
 
-    public Switch(PApplet applet, float cx, float cy, float w, float h, Window window) {
+    /**
+     * Constructor
+     * @param cx Center x
+     * @param cy Center y
+     * @param Width
+     * @param Height
+     * @param window Parent window
+     */
+    public Switch(float cx, float cy, float Width, float Height, Window window) {
         super(window);
 
         x = cx; //      Center x
         y = cy; //      Center y
-        Width = w;
-        Height = h;
+        this.Width = Width;
+        this.Height = Height;
         R = Height / 2; //          Larger, external radius
         r = (float) 0.75 * R; //    Smaller, internal radius
     }
@@ -53,17 +66,18 @@ public class Switch extends Element {
         c.line(x - dx, y - R, x + dx, y - R);
 
         prevValue = value;
-        if (mouseOver()) {
+        c.fill(255);    // Default
+
+        if ((mouseOver() || tabbed()) && !disabled) {
             c.fill(palette.highlight);
-            if (sketch.mousePressed) { //   On press - increases purpose and directness (compared to on release)
+            if (mouseOver() && sketch.mousePressed || tabbed() && triggerKeyPressed && !pTriggerKeyPressed) { //   On press - increases purpose and directness (compared to on release)
                 value = !value;
             }
-
-        } else {
-            c.fill(255);
         }
 
         c.ellipse(sx, y, 2 * r, 2 * r);
+
+        pTriggerKeyPressed = triggerKeyPressed;
     }
 
     boolean mouseOver() {

@@ -182,38 +182,38 @@ public class ScrollWindow extends Window {
      * @see KeyEvent
      */
     public void keyEvent(KeyEvent e) {
-        switch (e.getAction()) {
-            case (KeyEvent.PRESS):
-                keyPressed(e);
-                break;
-            case (KeyEvent.RELEASE):
-                keyReleased(e);
-                break;
+        if (displaying) {
+            switch (e.getAction()) {
+                case (KeyEvent.PRESS):
+                    keyPressed(e);
+                    break;
+            }
         }
     }
 
     void keyPressed(KeyEvent e) {
         if (mouseOver()) {
             switch (e.getKeyCode()) {
-                case (PApplet.UP):
-                    scroll -= scrollSensitivity;
-                    scroll = PApplet.constrain(scroll, 0, maxScroll);
+                case (PConstants.UP):
+                    if (shifting){
+                        scroll = 0;
+                    } else {
+                        scroll -= scrollSensitivity;
+                        scroll = PApplet.constrain(scroll, 0, maxScroll);
+                    }
                     break;
-                case (PApplet.DOWN):
-                    scroll += scrollSensitivity;
-                    scroll = PApplet.constrain(scroll, 0, maxScroll);
+                case (PConstants.DOWN):
+                    if (shifting){
+                        scroll = maxScroll;
+                    } else {
+                        scroll += scrollSensitivity;
+                        scroll = PApplet.constrain(scroll, 0, maxScroll);
+                    }
                     break;
-                case (PApplet.ENTER):
-                    scroll = maxScroll;
-                    break;
-                case (PApplet.BACKSPACE):
-                    scroll = 0;
+                case (PConstants.SHIFT):    // Combined with arrow keys for min/max
+                    shifting = true;
                     break;
             }
         }
-    }
-
-    void keyReleased(KeyEvent e) {
-        ;
     }
 }

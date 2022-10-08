@@ -24,13 +24,40 @@ public class Element {
     Palette enabledPalette;
     Palette disabledPalette;
 
+    /**
+     * A reference to the current Processing sketch
+     */
     protected PApplet sketch;
 
     // 'protected' -> can be accessed by subclasses
+    /**
+     * True indicates Element cannot be interacted with
+     */
     protected boolean disabled = false;
+    /**
+     * True indicates Element is invisible & disabled
+     */
     protected boolean hidden = false;
 
+    /**
+     * A unique set of characters identifying the element
+     */
     public String ID;
+
+    /**
+     * True indicates the element is being selected via tab key
+     * Use {@link Element#tabbed()} to get & {@link Element#setTabbed(boolean)} to set
+     */
+    boolean tabbed = false;
+    /**
+     * Indicates the equivalent of a mouse press, but for keys ENTER/RETURN/space
+     */
+    public boolean triggerKeyPressed = false;
+    /**
+     * Previous frame's {@link Element#triggerKeyPressed}
+     */
+    public boolean pTriggerKeyPressed = false;
+
 
     // Each window has its own colour palette. This palette is transferred to the
     // interface elements within the window
@@ -94,7 +121,61 @@ public class Element {
         hidden = true;
     }
 
+    /**
+     * Sets the ID of the Element.
+     * @param ID A unique ID.
+     */
     public void setID(String ID){
         this.ID = ID;
+    }
+
+    @Override
+    public String toString(){
+        return ID;
+    }
+
+    /**
+     * Converts a class name into a 3 character long abbreviation.
+     *
+     * BTN: Button
+     * RAD: RadioButton
+     * RBG: RadioButtonGroup
+     * SCW: ScrollWindow
+     * SLD: Slider
+     * SWT: Switch
+     * TXT: Text
+     * WIN: Window
+     *
+     * @return Abbreviated string.
+     * @see <a href=https://humphrja.github.io/pgui/doc/allclasses-index.html> All Classes </a>
+     */
+    public String abbr(){
+        switch (this.getClass().getSimpleName().toString()){
+            case ("Button"):            return "BTN";
+            case ("RadioButton"):       return "RAD";
+            case ("RadioButtonGroup"):  return "RBG";
+            case ("ScrollWindow"):      return "SCW";
+            case ("Slider"):            return "SLD";
+            case ("Switch"):            return "SWT";
+            case ("Text"):              return "TXT";
+            case ("Window"):            return "WIN";
+            default:                    return  null;
+        }
+    }
+
+    /**
+     * True if element is currently being selected via tab
+     * @return If element is currently being selected via tab
+     */
+    public boolean tabbed(){
+        return tabbed && window.tabbing;
+    }
+
+    /**
+     * Toggles if element is currently being selected via tab
+     * @param b True/False
+     */
+    public void setTabbed(boolean b){
+        tabbed = b;
     }
 }

@@ -8,8 +8,8 @@ import pgui.txt.*;
 public class Demo extends PApplet {
     float r = 200;
 
-    Window[] windows = new Window[8];
-    int currentWindow = 0;
+    WindowHandler app;
+    Window[] windows;
 
     // Used to declare the size of the sketch window
     public void settings() {
@@ -19,43 +19,42 @@ public class Demo extends PApplet {
 
     // This is run once, before the first frame of draw()
     public void setup() {
+        app = new WindowHandler(this);
+
         // Creating the palette of the main windows
         Palette winPalette = new Palette(color(53, 45, 57), color(255),
                 color(58, 155, 216), color(224, 82, 99), color(238, 122, 49));
 
         // Main menu - select an example window
-        Window w = new Window(this, winPalette);
+        Window w = app.addWindow(winPalette);
         w.addHeading("Choose an example window");
         createStartBtnGrid(w);
-        w.addButton("close", new Object[] {}, this, "Exit", width / 2 - 100, height - 100, 200, 70);
-        windows[0] = w;
+        w.addButton("close", new Object[] {}, app, "Exit", width / 2 - 100, height - 100, 200, 70);
         //
 
         // Window 1 - Different colour palettes
         Palette p2 = new Palette(color(252, 222, 156), color(56, 29, 42), color(196, 214, 176), color(186, 86,
                 36), color(255, 165, 82));
-        Window w1 = new Window(this, p2);
+        Window w1 = app.addWindow(p2);
         w1.addHeading("Windows can have different colour palettes.");
         createBackToHomeBtn(w1);
-        windows[1] = w1;
         //
 
         // Window 2 - Display different content
-        Window w2 = new Window(this, winPalette);
+        Window w2 = app.addWindow(winPalette);
         w2.addHeading("Windows can display content from custom methods too");
         createBackToHomeBtn(w2);
         w2.addContent("myMethod", new Object[] {}, this);
-        windows[2] = w2;
         //
 
         // Window 3 - Windows can be of different sizes and be within each other
-        Window w3 = new Window(this, winPalette);
+        Window w3 = app.addWindow(winPalette);
         w3.addHeading("Windows can exist within different windows!");
         createBackToHomeBtn(w3);
-        windows[3] = w3;
+        //
 
         // Window 4 - scroll window
-        Window w4 = new Window(this, winPalette);
+        Window w4 = app.addWindow(winPalette);
         w4.addHeading("Scroll windows allow you to have scroll features :)");
         createBackToHomeBtn(w4);
 
@@ -63,18 +62,16 @@ public class Demo extends PApplet {
         ScrollWindow sw = w4.addScrollWindow(p2, width / 2 - swidth - 25, 100, swidth, 600, 1000);
         sw.addHeading("This is a scroll window");
         createBackToHomeBtn(sw);
-//        sw.hide();
 
         ScrollWindow sw2 = w4.addScrollWindow(p2, width / 2 + 25, 100, swidth, 600, 800);
         sw2.addHeading("This is another scroll window!");
         sw2.addSlider(50, 200, sw2.Width / 2, 500, 400);
         sw2.addContent("sliderExample2", new Object[] { sw2 }, this);
-        windows[4] = w4;
         //
 
         // Window 5 - Buttons - shows different type of button activations ->
         // on_press, on_release, hold
-        Window w5 = new Window(this, winPalette);
+        Window w5 = app.addWindow(winPalette);
         w5.addHeading("Buttons can have different activation types...");
         createBackToHomeBtn(w5);
 
@@ -88,27 +85,26 @@ public class Demo extends PApplet {
         // While holding
         Button btn3 = w5.addButton("testString", new Object[] { "Hold" }, this, "Hold", 600, 300, 200, 70);
         btn3.setActivation("hold");
-        windows[5] = w5;
         //
 
         // Window 6 - Button recursion
-        Window w6 = new Window(this, winPalette);
+        Window w6 = app.addWindow(winPalette);
         w6.addHeading("Recursion?!");
         createBackToHomeBtn(w6);
         addNewButton(w6);
-        windows[6] = w6;
         //
 
         // Window 7 - Sliders and switches
-        Window w7 = new Window(this, winPalette);
+        Window w7 = app.addWindow(winPalette);
         w7.addHeading("Sliders and switches");
         createBackToHomeBtn(w7);
 
-        w7.addSlider(0, 360, width / 2, height - 200, 500);
+        Slider s2 = w7.addSlider(0, 360, width / 2, height - 200, 500);
         Text t = w7.addText("Hue", width/2, height - 170, 20);
         t.align(CENTER, TOP);
         Slider s = w7.addSlider(25, 225, width - 200, height / 2, 200);
-        s.setAxis('v', LEFT);
+        s.setAxis(Y);
+        s.setLabelSide(LEFT);
         Text t2 = w7.addText("Radius", width - 200, height/2 - 200/2 - 10, 20);
         t2.align(CENTER, BOTTOM);
 
@@ -122,10 +118,11 @@ public class Demo extends PApplet {
         w7.addText("Hide", width - 100, height/2 - 50, 20);
 
         w7.addRadioButtonGroup(width/6, height/2 - 80, (float) 10, 80, new String[] {"Circle", "Triangle", "Square", "Pentagon"});
-        w7.radBtns[0].setIndex(0);
 
-        windows[7] = w7;
+        w7.radBtns[0].setIndex(0);
         //
+
+        windows = app.windows;
     }
 
     // This is run every frame
@@ -147,7 +144,7 @@ public class Demo extends PApplet {
             windows[7].texts[2].enable();
         }
 
-        windows[currentWindow].display(g); // g is the default PGraphics object for the main sketch
+        app.displayCurrentWindow();
     }
 
     public static void main(String[] args) {
@@ -172,7 +169,7 @@ public class Demo extends PApplet {
         float ix = width / 2 - (nx * btnW + (nx - 1) * spacing) / 2;
         float iy = height / 2 - (ny * btnH + (ny + 1) * spacing) / 2;
 
-        String f = "setWindow";
+        String m = "setWindow"; // Method
 
         String[] labels = { "Colour", "Visuals", "Sub-windows", "Scroll windows", "Buttons", "Recursion" };
 
@@ -182,26 +179,26 @@ public class Demo extends PApplet {
                 float y = iy + row * (btnH + spacing);
 
                 Object[] args = new Object[] { col + row * nx + 1 };
-                w.addButton(f, args, this, labels[col + row * nx], x, y, btnW, btnH);
+                w.addButton(m, args, app, labels[col + row * nx], x, y, btnW, btnH);
             }
         }
 
-        w.addButton(f, new Object[] {7}, this, "Interactives",
+        w.addButton(m, new Object[] {7}, app, "Interactives",
                 ix + btnW + spacing, iy + 2*(btnH + spacing), btnW, btnH);
     }
 
     void createBackToHomeBtn(Window w) {
-        w.addButton("setWindow", new Object[] { 0 }, this, "Back to main menu",
+        w.addButton("setWindow", new Object[] { 0 }, app, "Back to main menu",
                 w.Width - 120, w.Height - 120, 100, 100);
     }
 
-    public void close() {
-        exit();
-    }
-
-    public void setWindow(int newWindowNum) {
-        currentWindow = newWindowNum;
-    }
+//    public void close() {
+//        exit();
+//    }
+//
+//    public void setWindow(int newWindowNum) {
+//        currentWindow = newWindowNum;
+//    }
 
     public void testString(String str) {
         fill(255, 0, 0);

@@ -54,11 +54,59 @@ public class Text extends Element {
 
         c.text(content, x, y);
 
+        // Draw a box around the text object to indicate tab index
+        if (tabbed()){
+            outline(c);
+        }
+
         if (underline) {
             c.stroke(palette.stroke);
             c.strokeWeight(4);
             c.line(x - underlineLength / 2, y + 5, x + underlineLength / 2, y + 5);
         }
+    }
+
+    void outline(PGraphics c){
+        c.noFill();
+        c.stroke(palette.stroke, 200);
+
+        float minX;
+        float minY;
+        float boxWidth = width();
+        float boxHeight = size;
+
+        // Account for different alignments
+        switch (alignX){
+            case (PConstants.LEFT):
+                minX = x;
+                break;
+            case (PConstants.CENTER):
+                minX = x - boxWidth/2;
+                break;
+            case (PConstants.RIGHT):
+                minX = x - boxWidth;
+                break;
+            default:
+                minX = 0;
+                break;
+        }
+
+        switch (alignY){
+            case (PConstants.TOP):
+                minY = y;
+                break;
+            case (PConstants.CENTER):
+                minY = y - boxHeight/2;
+                break;
+            case (PConstants.BOTTOM):
+                minY = y - boxHeight;
+                break;
+            default:
+                minY = 0;
+                break;
+        }
+
+        c.rect(minX, minY, boxWidth, boxHeight);
     }
 
     /**
