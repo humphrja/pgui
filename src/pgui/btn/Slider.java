@@ -21,6 +21,12 @@ public class Slider extends Element {
     float displacement = 20;
     int labelSide;
 
+    boolean discrete = false;   // True if N > 2
+    int N;              // Number of divisions
+    float inc;          // Increment = (max-min)/(N-1)
+    float pinc;         // Pixel increment
+    float lockPercentage;   // Margin around increments that triggers locking
+
     /**
      * Constructor
      * @param min Minimum value
@@ -49,28 +55,6 @@ public class Slider extends Element {
 
         pMousePressed = false;
     }
-
-//    /**
-//     *
-//     * @param a 'h' (horizontal) or 'v' (vertical)
-//     * @param labelSide TOP/BOTTOM or LEFT/RIGHT
-//     */
-//    public void setAxis(char a, int labelSide) {
-//        if (a == 'h' || a == 'v') {
-//            axis = a;
-//            if (a == 'h') {
-//                label.align(PApplet.CENTER, 203 - labelSide);
-//                // TOP = 101, BOTTOM = 102
-//                displacement *= (float) (2 * (labelSide - 101.5));
-//            } else {
-//                label.align(76 - labelSide, PApplet.CENTER);
-//                // LEFT = 37, RIGHT = 39
-//                displacement *= (labelSide - 38);
-//            }
-//        } else {
-//            System.out.println("Invalid axis parameter - input either 'h' or 'v' for horizontal or vertical");
-//        }
-//    }
 
     /**
      * Sets the axis the slider is aligned onto
@@ -141,25 +125,47 @@ public class Slider extends Element {
         c.stroke(palette.stroke);
         c.strokeWeight(4);
 
+        // Horizontal
         if (axis == PConstants.X) {
             sx = x + PApplet.map(value, minimum, maximum, -length / 2, length / 2);
-            c.line(x - length / 2, y, x + length / 2, y); // Long line
+            // Long line
+            c.line(x - length / 2, y, x + length / 2, y);
 
-            c.line(x - length / 2, y - d, x - length / 2, y + d); // End caps
+            // End caps
+            c.line(x - length / 2, y - d, x - length / 2, y + d);
             c.line(x + length / 2, y - d, x + length / 2, y + d);
 
+            // Divisions
+            if (discrete){
+                for (float divx = x - length / 2 + pinc; divx < x + length / 2; divx += pinc){
+                    c.line(divx, y - (float) 0.45*d, divx, y + (float) 0.45*d);
+                }
+            }
+
+            // Locks label to slider handle
             if (labelSide != PConstants.LEFT && labelSide != PConstants.RIGHT) {
                 label.x = sx;
                 label.y = sy + (float) (2 * (labelSide - 101.5))*displacement;
             }
 
+        // Vertical
         } else if (axis == PConstants.Y) {
             sy = y + PApplet.map(value, maximum, minimum, -length / 2, length / 2);
-            c.line(x, y - length / 2, x, y + length / 2); // Long line
+            // Long line
+            c.line(x, y - length / 2, x, y + length / 2);
 
-            c.line(x - d, y - length / 2, x + d, y - length / 2); // End caps
+            // End caps
+            c.line(x - d, y - length / 2, x + d, y - length / 2);
             c.line(x - d, y + length / 2, x + d, y + length / 2);
 
+            // Divisions
+            if (discrete){
+                for (float divy = y - length / 2 + pinc; divy < y + length / 2; divy += pinc){
+                    c.line(x - (float) 0.45*d, divy, x + (float) 0.45*d, divy);
+                }
+            }
+
+            // Locks label to slider handle
             if (labelSide != PConstants.TOP && labelSide != PConstants.BOTTOM){
                 label.y = sy - sketch.textDescent()/2;
                 label.x = sx + (float) (labelSide - 38)*displacement;
@@ -188,6 +194,12 @@ public class Slider extends Element {
             } else if (value > maximum) {
                 value = maximum;
             }
+
+            if (discrete) {
+                // Rounds to nearest integer number of increments, 0.5 must be added because (int) = floor()
+                value = (int) (PApplet.map(value, minimum, maximum, 0, N-1) + (float) 0.5);
+                value = minimum + inc*value;
+            }
         }
 
         label.content = PApplet.str(PApplet.round(value));
@@ -203,5 +215,35 @@ public class Slider extends Element {
         c.ellipse(sx, sy, 2 * sr, 2 * sr);
 
         pMousePressed = sketch.mousePressed;
+    }
+
+    /**
+     * Adds increments to the slider, quantising its output into a set of N discrete values.
+     * Each division will be separated by an increment of: range/(N-1)
+     * @param N number of divisions (N > 1)
+     */
+    public void increment(int N){
+        increment(N, 1);
+    }
+
+    /**
+     * Adds increments to the slider, but handle will only lock to each increment near
+     * @param N number of divisions (N > 1)
+     * @see Slider#increment
+     */
+    public void softIncrement(int N){
+        increment(N, (float) 0.25);
+    }
+
+    void increment(int N, float lp){
+        if (N < 2){
+            System.out.println("Number of divisions (N) must be larger than 1");
+            return;
+        }
+        discrete = true;
+        this.N = N;
+        inc = (maximum-minimum)/(N-1);
+        pinc = length/(N-1);
+        lockPercentage = lp;
     }
 }

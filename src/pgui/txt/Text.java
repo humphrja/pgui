@@ -132,12 +132,20 @@ public class Text extends Element {
     }
 
     /**
-     * Returns the width of the text on screen
+     * Returns the width of the text on screen.
      * @return Text's width
      * @see <a href="https://processing.org/reference/textWidth_.html">textWidth()</a>
      */
-    public float width(){
+    public float width() {
         sketch.textSize(size);
         return sketch.textWidth(content);
+    }
+
+    /**
+     * Returns the height of the text on screen.
+     * @return Text's height
+     */
+    public float height() {
+        return size;
     }
 }

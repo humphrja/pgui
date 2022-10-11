@@ -122,6 +122,22 @@ public class Element {
     }
 
     /**
+     * Returns true if element is disabled
+     * @return {@link Element#disabled}
+     */
+    public boolean isDisabled(){
+        return disabled;
+    }
+
+    /**
+     * Returns true if element is hidden
+     * @return {@link Element#hidden}
+     */
+    public boolean isHidden(){
+        return hidden;
+    }
+
+    /**
      * Sets the ID of the Element.
      * @param ID A unique ID.
      */

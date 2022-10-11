@@ -100,11 +100,13 @@ public class Demo extends PApplet {
         createBackToHomeBtn(w7);
 
         Slider s2 = w7.addSlider(0, 360, width / 2, height - 200, 500);
+        s2.increment(4);
         Text t = w7.addText("Hue", width/2, height - 170, 20);
         t.align(CENTER, TOP);
         Slider s = w7.addSlider(25, 225, width - 200, height / 2, 200);
         s.setAxis(Y);
         s.setLabelSide(LEFT);
+        s.increment(10);
         Text t2 = w7.addText("Radius", width - 200, height/2 - 200/2 - 10, 20);
         t2.align(CENTER, BOTTOM);
 
@@ -142,6 +144,10 @@ public class Demo extends PApplet {
         } else if (windows[7].switches[1].toggledOff()){
             windows[7].sliders[1].enable();
             windows[7].texts[2].enable();
+        }
+
+        if (windows[7].radBtns[0].newSelection()) {
+            System.out.println('a');
         }
 
         app.displayCurrentWindow();

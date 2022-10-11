@@ -251,14 +251,19 @@ public class Window extends Element {
     void handleTabPress(){
         if (tabbing) {
             pTabIndex = tabIndex;
-            if (shifting) {      // Shift is used to iterate backwards
-                tabIndex--;
-            } else {
-                tabIndex++;
-            }
+            // Used to skip past disabled (and hidden) elements while tabbing
+            boolean elementDisabled = true;
+            while (elementDisabled) {
+                if (shifting) {      // Shift is used to iterate backwards
+                    tabIndex--;
+                } else {
+                    tabIndex++;
+                }
 
-            // Adding elements.length before taking modulo allows for cycling backwards, below zero
-            tabIndex = (tabIndex + elements.length) % elements.length;
+                // Adding elements.length before taking modulo allows for cycling backwards, below zero
+                tabIndex = (tabIndex + elements.length) % elements.length;
+                elementDisabled = elements[tabIndex].isDisabled();
+            }
         }
         tabbing = true;
 

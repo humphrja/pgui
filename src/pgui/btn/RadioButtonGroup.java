@@ -19,6 +19,7 @@ public class RadioButtonGroup extends Element {
      * The index of the selected button in {@link RadioButtonGroup#btns}
      */
     public int index;
+    int pindex; // Previous index
 
     /**
      * The position of the first button in the group, relative to the parent Window
@@ -104,7 +105,8 @@ public class RadioButtonGroup extends Element {
         createArray();
     }
 
-    public void display(PGraphics c){
+    public void display(PGraphics c) {
+        pindex = index;
         for (int i = 0; i < btns.length; i++){
             RadioButton btn = btns[i];
             // Selects a button on mouseclick
@@ -141,5 +143,13 @@ public class RadioButtonGroup extends Element {
         for (int j = 0; j < btns.length; j++) {
             btns[j].selected = (j == i);
         }
+    }
+
+    /**
+     * Used to determine a change in selection
+     * @return True if a new selection has been made
+     */
+    public boolean newSelection() {
+        return index != pindex;
     }
 }
