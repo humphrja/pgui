@@ -28,10 +28,9 @@ public class Button extends Element {
     // new Button("method_1", new Object[] {arg1, arg2, arg3}, this, "Click Me!",
     // 100, 100, 200, 70, btnPalette)
 
-    public Button(PApplet applet, String mName, Object[] args, Object classInstance, String t, float btnx, float btny,
+    public Button(String mName, Object[] args, Object classInstance, String t, float btnx, float btny,
             float w, float h, Window window) {
         super(window);
-        sketch = applet;
 
         tempObj = classInstance;
         Method[] methods = classInstance.getClass().getDeclaredMethods();
@@ -121,7 +120,6 @@ public class Button extends Element {
         c.text(label, x, y, Width, Height); // Draw button text
 
         if ((mouseOver() && activated() || tabbed() && triggerKeyPressed && !pTriggerKeyPressed) && !disabled) { // If button is activated
-            System.out.println(label);
             try {
                 event.invoke(tempObj, eventArgs); // Invoke method = call function
             } catch (NullPointerException e) { // Handle any errors (Java requirement)

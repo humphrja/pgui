@@ -47,6 +47,14 @@ public class Window extends Element {
      * Contains all {@link RadioButtonGroup} objects within the Window.
      */
     public RadioButtonGroup[] radBtns = new RadioButtonGroup[0];
+    /**
+     * Contains all {@link Dropdown} objects within the Window
+     */
+    public Dropdown[] dropdowns = new Dropdown[0];
+    /**
+     * Contains all sub-{@link Window} objects within the Window
+     */
+    public Window[] windows = new Window[0];
 
     // These 3 arrays are used for displaying any visual methods
     Method[] displayMethods = new Method[0]; //     Contains the display methods
@@ -80,7 +88,16 @@ public class Window extends Element {
     int tabIndex;
     int pTabIndex;      // previous
 
+    /**
+     * Indicates a window is currently being displayed to keyboard input handlers
+     */
     public boolean displaying;
+
+    /**
+     * An array containing the elements to be displayed last.
+     * This is ordered such that the last index is the most front element (displayed last), 2nd last is next (displayed 2nd last), and so on...
+     */
+    public Element[] displayOrder = new Element[0];
 
     /**
      * Used for main windows, with no parent window.
@@ -107,7 +124,7 @@ public class Window extends Element {
      */
     public Window(Palette colours, Window parent) {
         super(parent);
-        palette = colours;
+        this.palette = colours.copy();
     }
 
     public void display(PGraphics c) { // c is short for canvas
@@ -135,8 +152,23 @@ public class Window extends Element {
 
         c.colorMode(PConstants.RGB, 255);
 
-        // Display all elements
+        if (displaying) {
+            for (Window w : windows) {
+                w.displaying = true;
+            }
+            for (ScrollWindow sw : sWindows) {
+                sw.displaying = true;
+            }
+        }
+
+        // Display all elements except those to be displayed last
         for (Element e : elements){
+            if (!e.isDisplayedLast()) {
+                e.display(c);
+            }
+        }
+
+        for (Element e : displayOrder) {
             e.display(c);
         }
 
@@ -330,7 +362,17 @@ public class Window extends Element {
     // The created object is returned so as to easily override any default parameters
 
     // A method to append an element of any type to its corresponding array
-    <Any extends Element> Any[] appendElement(Any element, Any[] arr){
+
+    /**
+     * This adds an element to the end of an array of elements
+     * @param element The element to be added
+     * @param arr The array the element will be added to
+     * @return The new array
+     * @param <Any> Any object that is a child of {@link Element}, e.g. Button, etc.
+     * 
+     * @see Window#prependElement(Element, Element[]) 
+     */
+    public <Any extends Element> Any[] appendElement(Any element, Any[] arr){
         // set Element's ID
         String ID = element.abbr() + "#" + String.format("%03d", arr.length);
         element.setID(ID);
@@ -347,6 +389,61 @@ public class Window extends Element {
     }
 
     /**
+     * This adds an element to the beginning of an array of elements
+     * @param element The element to be added
+     * @param arr The array the element will be added to
+     * @return The new array
+     * @param <Any> Any object that is a child of {@link Element}, e.g. Button, etc.
+     *             
+     * @see Window#appendElement(Element, Element[]) 
+     */
+    public <Any extends Element> Any[] prependElement(Any element, Any[] arr){
+        // Prepends element to corresponding array
+        arr = Arrays.copyOf(arr, arr.length + 1);
+
+        // Shifts all elements up by 1 index by iterating backwards through array
+        for (int i = arr.length - 1; i > 0; i--) {
+            arr[i] = arr[i-1];
+        }
+        arr[0] = element;
+
+        return arr;
+    }
+
+    /**
+     * This removes an element from an array of elements
+     * @param element The element to be added
+     * @param arr The array the element will be added to
+     * @return The new array
+     * @param <Any> Any object that is a child of {@link Element}, e.g. Button, etc.
+     *
+     * @see Window#appendElement(Element, Element[])
+     */
+//    public <Any extends Element> Any[] removeElement(Any element, Any[] arr){
+//        // Searches for index of specified element
+//        int foundIndex = 0;
+//        while (!arr[foundIndex].equals(element)) {
+//            foundIndex++;
+//        }
+//
+//        System.out.println(foundIndex);
+//
+//        // Removes element at found index
+//        Any[] temp = Arrays.copyOf(arr, arr.length - 1);
+//        for (int i = 0, j = 0; i < temp.length; i++) {
+//            if (i != foundIndex) {
+//                temp[j++] = arr[i];
+//            }
+//        }
+//        arr = temp;
+//
+//        System.out.println(arr);
+//
+//        return arr;
+//    }
+
+
+    /**
      * Adds a {@link Button} to the Window.
      *
      * @param methodName The name of the method the Button will invoke
@@ -361,7 +458,7 @@ public class Window extends Element {
      */
     public Button addButton(String methodName, Object[] methodArgs, Object instance, String label, float btnx,
                             float btny, float Width, float Height) {
-        Button btn = new Button(sketch, methodName, methodArgs, instance, label, btnx + x, btny + y, Width, Height, this);
+        Button btn = new Button(methodName, methodArgs, instance, label, btnx + x, btny + y, Width, Height, this);
         btns = appendElement(btn, btns);
         return btn;
     }
@@ -438,11 +535,43 @@ public class Window extends Element {
      * @param r Radius of each button
      * @param spacing Distance between each button
      * @param labels An array containing each RadioButton's label
-     * @return The create RadioButtonGroup object.
+     * @return The created RadioButtonGroup object.
      */
     public RadioButtonGroup addRadioButtonGroup(float x, float y, float r, float spacing, String[] labels){
         RadioButtonGroup rbg = new RadioButtonGroup(this, x, y, r, spacing, labels);
         radBtns = appendElement(rbg, radBtns);
         return rbg;
+    }
+
+    /**
+     * Adds a dropdown menu to the Window
+     * @param x x coordinate of top left corner of button
+     * @param y y coordinate of top left corner of button
+     * @param Width width of button
+     * @param Height height of button
+     * @param selections An array of strings containing the selections available to the user
+     * @return The created dropdown menu object
+     */
+    public Dropdown addDropdown(float x, float y, float Width, float Height, String[] selections) {
+        Dropdown dd = new Dropdown(this, this.x + x, this.y + y, Width, Height, selections);
+        dropdowns = appendElement(dd, dropdowns);
+        return dd;
+    }
+
+    /**
+     * Adds a sub-window to the window.
+     *
+     * @param x x-coordinate of top left corner of sub-window
+     * @param y y-coordinate of top left corner of sub-window
+     * @param Width
+     * @param Height
+     * @param palette Colour palette of sub-window
+     * @return The created sub-window
+     */
+    public Window addWindow(int x, int y, int Width, int Height, Palette palette) {
+        Window w = new Window(palette, this);
+        w.setDimensions(x, y, Width, Height, displayX, displayY);
+        windows = appendElement(w, windows);
+        return w;
     }
 }

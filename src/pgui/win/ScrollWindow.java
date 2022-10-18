@@ -25,10 +25,15 @@ public class ScrollWindow extends Window {
     public float barWidth = 20;
     public float barHeight = 150;
 
+    int strokeWeight = 4;
+
     /**
      * This indicates if the scroll bar is currently being manipulated via mouse input
      */
     boolean mouseDown = false;
+
+    boolean barBackground = false;  // Used for displaying a scroll bar background
+    boolean fixScroll = false;      // Used for keeping scroll bar on window
 
     /**
      * @param parent A reference to the parent window
@@ -58,7 +63,7 @@ public class ScrollWindow extends Window {
         scrollSensitivity = 15; // Scalar factor each wheel tick is multiplied by
     }
 
-    public void displayScrollBar() {
+    void displayScrollBar() {
         float strokeWeight = (float) 1.5;
 
         float opacity = 200; // 200/255 % opacity
@@ -67,6 +72,13 @@ public class ScrollWindow extends Window {
         }
 
         canvas.beginDraw();
+
+        if (barBackground) {
+            canvas.fill(palette.stroke, 100);
+            canvas.noStroke();
+            canvas.rect(Width - barWidth, 0, barWidth, Height);
+        }
+
         canvas.fill(palette.primary, opacity);
 
         if (mouseDown) {
@@ -101,7 +113,7 @@ public class ScrollWindow extends Window {
         // Displays the window's contents to the scroll canvas
         super.display(canvas);
 
-        if (mouseOver() || mouseDown) {
+        if (mouseOver() || mouseDown || fixScroll) {
             displayScrollBar();
         }
 
@@ -110,9 +122,10 @@ public class ScrollWindow extends Window {
 
         // Draws a border to the window
         c.noFill();
-        c.strokeWeight(4);
+        c.strokeWeight(strokeWeight);
         c.stroke(palette.stroke);
         c.rect(displayX, displayY, Width, Height);
+//        addBorder(4);
     }
 
     void updatePos(float newx, float newy) {
@@ -122,13 +135,40 @@ public class ScrollWindow extends Window {
         }
     }
 
-    boolean mouseOver() {
+    /**
+     * Sets the strokeweight of the ScrollWindow's border.
+     * @param strokeWeight value for border strokeweight
+     */
+    public void setBorderStrokeWeight(int strokeWeight) {
+        this.strokeWeight = strokeWeight;
+    }
+
+    public void addScrollBarBackground() {
+        barBackground = true;
+    }
+
+    /**
+     * Prevents the scroll bar from hiding when mouse is off window
+     */
+    public void keepScrollOnWindow() {
+        fixScroll = true;
+    }
+
+    /**
+     * Indicates if the mouse is hovering over the ScrollWindow.
+     * @return True if mouse is over window
+     */
+    public boolean mouseOver() {
         return sketch.mouseX >= x + displayX && sketch.mouseY >= y + displayY
                 && sketch.mouseX <= x + Width + displayX && sketch.mouseY <= y + Height + displayY
                 && !disabled;
     }
 
-    boolean mouseInBarRegion() {
+    /**
+     * Indicates if the mouse is hovering over the scroll bar.
+     * @return True if mouse is over bar
+     */
+    public boolean mouseInBarRegion() {
         return sketch.mouseX >= Width - barWidth + displayX && sketch.mouseY >= displayY
                 && sketch.mouseX <= Width + displayX && sketch.mouseY <= Height + displayY
                 && !disabled;

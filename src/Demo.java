@@ -64,6 +64,7 @@ public class Demo extends PApplet {
         createBackToHomeBtn(sw);
 
         ScrollWindow sw2 = w4.addScrollWindow(p2, width / 2 + 25, 100, swidth, 600, 800);
+        sw2.addScrollBarBackground();
         sw2.addHeading("This is another scroll window!");
         sw2.addSlider(50, 200, sw2.Width / 2, 500, 400);
         sw2.addContent("sliderExample2", new Object[] { sw2 }, this);
@@ -76,7 +77,7 @@ public class Demo extends PApplet {
         createBackToHomeBtn(w5);
 
         // On release (default)
-        w5.addButton("testString", new Object[] { "On Release" }, this, "On Release", 100, 300, 200, 70);
+        Button btn1 = w5.addButton("testString", new Object[] { "On Release" }, this, "On Release", 100, 300, 200, 70);
 
         // On press
         Button btn2 = w5.addButton("testString", new Object[] { "On Press" }, this, "On Press", 350, 300, 200, 70);
@@ -85,6 +86,12 @@ public class Demo extends PApplet {
         // While holding
         Button btn3 = w5.addButton("testString", new Object[] { "Hold" }, this, "Hold", 600, 300, 200, 70);
         btn3.setActivation("hold");
+
+        btn1.displayLast();
+        btn2.displayLast();
+        btn3.displayLast();
+
+        println((Object) w5.displayOrder);
         //
 
         // Window 6 - Button recursion
@@ -98,6 +105,8 @@ public class Demo extends PApplet {
         Window w7 = app.addWindow(winPalette);
         w7.addHeading("Sliders and switches");
         createBackToHomeBtn(w7);
+
+        w7.addDropdown(width/2 - 100, 100, 200, 40, new String[] {"Test", "Test 2", "Test 3", "Test 4", "Test 5"});
 
         Slider s2 = w7.addSlider(0, 360, width / 2, height - 200, 500);
         s2.increment(4);
@@ -120,7 +129,6 @@ public class Demo extends PApplet {
         w7.addText("Hide", width - 100, height/2 - 50, 20);
 
         w7.addRadioButtonGroup(width/6, height/2 - 80, (float) 10, 80, new String[] {"Circle", "Triangle", "Square", "Pentagon"});
-
         w7.radBtns[0].setIndex(0);
         //
 
@@ -133,21 +141,27 @@ public class Demo extends PApplet {
         if (windows[7].switches[0].toggledOn()){
             windows[7].sliders[0].disable();
             windows[7].texts[1].disable();
+            windows[7].dropdowns[0].disable();
         } else if (windows[7].switches[0].toggledOff()){
             windows[7].sliders[0].enable();
             windows[7].texts[1].enable();
+            windows[7].dropdowns[0].enable();
         }
 
         if (windows[7].switches[1].toggledOn()){
             windows[7].sliders[1].hide();
             windows[7].texts[2].hide();
+            windows[7].dropdowns[0].hide();
         } else if (windows[7].switches[1].toggledOff()){
             windows[7].sliders[1].enable();
             windows[7].texts[2].enable();
+            windows[7].dropdowns[0].enable();
         }
 
         if (windows[7].radBtns[0].newSelection()) {
             System.out.println('a');
+        } else if (windows[7].dropdowns[0].newSelection()) {
+            System.out.println('b');
         }
 
         app.displayCurrentWindow();

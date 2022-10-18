@@ -39,6 +39,8 @@ public class Element {
      */
     protected boolean hidden = false;
 
+    boolean displayedLast = false;
+
     /**
      * A unique set of characters identifying the element
      */
@@ -193,5 +195,23 @@ public class Element {
      */
     public void setTabbed(boolean b){
         tabbed = b;
+    }
+
+    /**
+     * Instructs the parent window to display this element last.
+     * This is the same as 'send to front' for image overlap.
+     */
+    public void displayLast() {
+        window.displayOrder = window.appendElement(this, window.displayOrder);
+        displayedLast = true;
+//        window.elements = window.removeElement(this, window.elements);
+    }
+
+    /**
+     * Indicates if the element has been instructed to display last (or near last).
+     * @return True if element is displayed last
+     */
+    public boolean isDisplayedLast() {
+        return displayedLast;
     }
 }
