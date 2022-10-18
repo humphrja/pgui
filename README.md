@@ -1,7 +1,13 @@
 ## About
  pgui is a [Processing](https://processing.org/) library used for the creation of GUI elements.<br>
  This includes: windows, buttons, sliders, etc.
- View the full list of available elements in the [Developer's Reference](https://humphrja.github.io/pgui/doc/allclasses-index.html).
+ View the full list of available elements in the [Developer's Reference](https://humphrja.github.io/pgui/doc/allclasses-index.html).<br>
+ 
+ pgui allows developers to add modern, sleek User Interface (UI) elements to Processing sketches and Java projects.
+ The library has been developed with a focus on efficient implementation, to reduce the workload of the developer, and a focus on modular structure to maximise creative freedom. <br>
+ 
+ Development is currently being done to improve the accessibilty of the library by ensuring each element is keyboard-friendly. Further development is intended to produce features that improve the accessibility of the library.
+ 
 
 ## Getting Started
  0. [Download](https://processing.org/download) Processing
