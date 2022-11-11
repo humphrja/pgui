@@ -53,7 +53,6 @@ public class Button extends Element {
 
         // colours = cols; // A Palette object
         textSize = 20;
-        strokeWeight = 4; // Thickness of the outline
 
         // textSize = int(w*h/(50*t.length())); // Default values, good for horizontally long rectangles
         strokeWeight = (int) (2 * (w + h) / 150); // Convert float -> int via (int), known as 'casting'
@@ -108,8 +107,11 @@ public class Button extends Element {
             c.fill(palette.primary); // Set button colour
         }
 
-        c.strokeWeight(strokeWeight);
         c.stroke(palette.stroke);
+        c.strokeWeight(strokeWeight);
+        if (strokeWeight == 0) {
+            c.noStroke();
+        }
         c.rectMode(PConstants.CORNER);
         c.rect(x, y, Width, Height); // Draw rectangle
 

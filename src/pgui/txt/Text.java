@@ -21,6 +21,12 @@ public class Text extends Element {
     public float x, y;
     int alignX, alignY, size;
 
+    // Dimensions of outline box
+    float minX;
+    float minY;
+    float boxWidth;
+    float boxHeight;
+
     boolean underline;
     float underlineLength;
 
@@ -38,13 +44,13 @@ public class Text extends Element {
         x = xpos;
         y = ypos;
         size = tsize;
-        alignX = PConstants.CENTER; // Default align is CENTER, CENTER
-        alignY = PConstants.CENTER;
+        align(PConstants.CENTER, PConstants.CENTER);
         underline = false;
     }
 
     public void display(PGraphics c) {
         if (hidden){return;}
+
 
         c.textAlign(alignX, alignY);
         c.textSize(size);
@@ -56,24 +62,41 @@ public class Text extends Element {
 
         // Draw a box around the text object to indicate tab index
         if (tabbed()){
-            outline(c);
+            setBoxDimensions();
+
+            c.noFill();
+            c.stroke(palette.stroke, 200);
+            c.strokeWeight(size/8);
+            c.rect(minX, minY, boxWidth, boxHeight);
         }
 
+        float cx = minX + boxWidth/2;
+        float maxY = minY + boxHeight;
         if (underline) {
             c.stroke(palette.stroke);
-            c.strokeWeight(4);
-            c.line(x - underlineLength / 2, y + 5, x + underlineLength / 2, y + 5);
+            c.strokeWeight(size/8);
+            c.line(cx - underlineLength / 2, maxY + 5, cx + underlineLength / 2, maxY + 5);
         }
     }
 
-    void outline(PGraphics c){
-        c.noFill();
-        c.stroke(palette.stroke, 200);
+    /**
+     * Aligns the text using Processing's <a href="https://processing.org/reference/textAlign_.html">textAlign()</a> method.
+     *
+     * @param ax LEFT, CENTER or RIGHT
+     * @param ay TOP, CENTER or BOTTOM
+     * @see PConstants
+     */
+    public void align(int ax, int ay) {
+        alignX = ax; // LEFT, CENTER or RIGHT
+        alignY = ay; // TOP, CENTER or BOTTOM
 
-        float minX;
-        float minY;
-        float boxWidth = width();
-        float boxHeight = size;
+        setBoxDimensions();
+    }
+
+    // Adjusts minX, minY, boxWidth & boxHeight according to text alignment
+    void setBoxDimensions() {
+        boxWidth = width();
+        boxHeight = height();
 
         // Account for different alignments
         switch (alignX){
@@ -105,20 +128,6 @@ public class Text extends Element {
                 minY = 0;
                 break;
         }
-
-        c.rect(minX, minY, boxWidth, boxHeight);
-    }
-
-    /**
-     * Aligns the text using Processing's <a href="https://processing.org/reference/textAlign_.html">textAlign()</a> method.
-     *
-     * @param ax LEFT, CENTER or RIGHT
-     * @param ay TOP, CENTER or BOTTOM
-     * @see PConstants
-     */
-    public void align(int ax, int ay) {
-        alignX = ax; // LEFT, CENTER or RIGHT
-        alignY = ay; // TOP, CENTER or BOTTOM
     }
 
     /**

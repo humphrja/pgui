@@ -139,6 +139,10 @@ public class Element {
         return hidden;
     }
 
+    public void setPalette(Palette p) {
+        palette = p.copy();
+    }
+
     /**
      * Sets the ID of the Element.
      * @param ID A unique ID.
